@@ -1,0 +1,66 @@
+﻿@using CertificationCoreWeb.Resources
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResource> Localizer
+@model Certification.Domain.DomainModels.LoginView
+
+@{
+    ViewBag.Title = Localizer["successfullyregister"];
+}
+
+
+<div id="titlebar" class="gradient">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+
+                <h2>@Localizer["successfullyregister"]</h2>
+
+                <!-- Breadcrumbs -->
+                <nav id="breadcrumbs" class="dark">
+                    <ul>
+                        <li><a href="@Url.Action("Index","Home")">@Localizer["homepage"]</a></li>
+                        <li>@Localizer["successfullyregister"]</li>
+                    </ul>
+                </nav>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-xl-5 offset-xl-3">
+
+            <div class="login-register-page">
+                <!-- Welcome Text -->
+                <div class="welcome-text">
+                    <h3>@Localizer["gladtoseeyou"] </h3>
+                    <span>
+                        @Localizer["registersuccessdone"] 
+                        <a href="@Url.Action("Index","Requests")"> @Localizer["browseuntillactivate"] </a>
+                    </span>
+                </div>
+
+
+                <!-- Button -->
+                <button class="button full-width button-sliding-icon ripple-effect margin-top-10" type="button"
+                        form="login-form">
+                    @Localizer["doesnotgetactivation"]   <i class="icon-material-outline-arrow-right-alt"></i>
+                </button>
+
+
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+<div class="margin-top-70"></div>
+<div id="backtotop" class="visible"><a href="#"></a></div>
+<div id="mm-blocker" class="mm-slideout"></div>
+
+
+

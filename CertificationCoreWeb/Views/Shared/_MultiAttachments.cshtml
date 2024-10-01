@@ -1,0 +1,25 @@
+﻿@using CertificationCoreWeb.Resources
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResource> Localizer
+@model IEnumerable<Certification.Domain.Entities.FileAttachment>
+
+@if (Model.Count() != 0)
+{
+    foreach (var item in Model)
+    {
+        <a target="_blank" href="~/Attachments/@( item.FileAttachmentId+(item.TypeId==1?".jpg":".pdf"))"
+           class="attachment-box ripple-effect">
+          <span>@item.Title</span>
+          <i>@(item.TypeId == 1 ? "JPG" : "PDF")</i>
+            <img src="~/Attachments/@( item.FileAttachmentId+(item.TypeId==1?".jpg":".pdf"))" height="50px" width="50px" />
+        </a>
+
+    }
+}
+else{ 
+    <p>@Localizer["noattachments"]</p>
+}
+
+
+
+

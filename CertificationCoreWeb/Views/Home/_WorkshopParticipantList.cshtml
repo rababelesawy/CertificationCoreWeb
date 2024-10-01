@@ -1,0 +1,251 @@
+﻿
+
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+@model Certification.Domain.DomainModels.WorkshopParticipantModel
+
+
+<div class="row gutters">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        <!-- Row start -->
+        <div class="row gutters">
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                <div class="social-tile">
+                    <div class="social-icon fb">
+                        <i class="fa fa-certificate"></i>
+                    </div>
+                    <div class="social-stats">
+                        <h3>إجمالي الشهادات</h3>
+                        <p>@Model.TotalUser</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                <div class="social-tile">
+                    <div class="social-icon tw">
+                        <i class="icon-check-circle"></i>
+                    </div>
+                    <div class="social-stats">
+                        <h3>الشهادات التي تم طباعتها</h3>
+                        <p>@Model.PrintUser</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                <div class="social-tile">
+                    <div class="social-icon lk">
+                        <i class="fa fa-ban"></i>
+                    </div>
+                    <div class="social-stats">
+                        <h3>ما لم يتم طباعته</h3>
+                        <p>@Model.NonPrintUser</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Row end -->
+    </div>
+
+</div>
+
+
+<table class="table custom-table m-0">
+    <thead>
+        <tr>
+            <th>الاسم المعتمد للشهادة</th>
+            <th> البريد الالكترونى</th>
+            <th>الجوال </th>
+            <th>الدورة </th>
+            <th> المدرب </th>
+            @*<th> الطابع الزمنى </th>*@
+            <th> الطباعة  </th>
+            <th>   </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.WorkshopParticipants.Result)
+        {
+            <tr class='@(item.IsEmailSended?"found-data":"not-found-data")' id="tr_@item.WorkshopParticipantId">
+               
+                <td>@item.Name</td>
+                <td>@item.Email</td>
+                <td>@item.Phone</td>
+                <td>@(item.Course?.CourseName)</td>
+                <td>@(item.Course?.CoachName)</td>
+                @*<td>@Convert.ToDateTime(item.AddedDate).ToString("dd/MM/yyyy")</td>*@
+                <td>
+
+                    @if (item.IsPrinted == true)
+                    {
+                        <i class="fa fa-check-circle check-green" title="تم الطباعة "></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-times-circle  times-red" title=" لم يتم طباعة الشهادة"></i>
+
+                    }
+
+
+                </td>
+                <td>
+                    <a href="@Url.Action("PrintCertification", "Home",new { id=item.WorkshopParticipantId})" class="btn btn-print" title="تحميل الشهادة وطباعتها">
+                        <i class="fa fa-print"></i>
+                        &nbsp; طباعة
+                    </a>
+
+                    <a class="btn btn-certificate" href="javascript:void(0)" id="a_@item.WorkshopParticipantId" title="ارسال بريد الالكتروني بالشهادة"
+                       onclick="ActiveCertification('@item.WorkshopParticipantId','@item.IsEmailSended.ToString().ToLower()')">
+                        <i class="fa fa-thumbs-up"></i>
+                        &nbsp; اعتماد الشهادة
+                    </a>
+
+                    <a class="btn btn-certificate" href="javascript:void(0)" id="a_@item.WorkshopParticipantId" title="ارسال رسالة على الواتس بالشهادة"
+                       onclick="SendWhatsApp();">
+                        <i class="fa fa-whatsapp"></i>
+                        &nbsp; اعتماد الشهادة بالواتس
+                    </a>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="7">
+                <ul class="pagination pagination-primary"></ul>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+
+
+<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+    <div class="row gutters">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="mr-p">
+@* 
+                <nav aria-label="Page navigation example">
+                    @if (ViewBag.type == 1)
+                    {
+                        @Html.PagedListPager(Model.WorkshopParticipants, (itemsPerPage, currentPage) => Url.Action("WorkshopParticipants", new { itemsPerPage, currentPage, theme = (string)ViewBag.Theme }), new AjaxOptions { OnSuccess = "UpdateProductsTable", LoadingElementId = "loading" }, ifaTheme: (string)ViewBag.Theme)
+
+                    }
+                    else
+                    {
+
+
+                        @Html.PagedListPager(Model.WorkshopParticipants, (itemsPerPage, currentPage) => Url.Action("WorkshopParticipantSearch", new
+                   {
+                       Model.WorkshopParticipantSearchModel.Name,
+                       Model.WorkshopParticipantSearchModel.Phone,
+                       Model.WorkshopParticipantSearchModel.CourseId,
+                       Model.WorkshopParticipantSearchModel.IsPrinted,
+                       Model.WorkshopParticipantSearchModel.IsSended,
+                       Model.WorkshopParticipantSearchModel.CoachName,
+                       itemsPerPage,
+                       currentPage,
+                       theme = (string)ViewBag.Theme
+                   }),
+                           new AjaxOptions { OnSuccess = "UpdateProductsTable", LoadingElementId = "loading", HttpMethod = "Post" }/* , ifaTheme: (string)ViewBag.Theme */)
+                    }
+                </nav> *@
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/Content/assets/js/jquery-3.2.1.min.js"></script>
+
+<!-- bootstrap notify js -->
+<script src="~/Content/assets/js/notify/bootstrap-notify.min.js"></script>
+<script src="~/Content/assets/js/notify/notify-script.js"></script>
+
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+<script src="~/Scripts/modernizr-2.6.2.js"></script>
+
+
+<script src="~/Scripts/Application.js"></script>
+
+<script>
+    function ActiveCertification(WorkshopParticipantId, IsEmailSended) {
+ 
+        $('#a_' + WorkshopParticipantId).prop('onclick', null);
+      
+        if (IsEmailSended=="true") {
+            alertt("تم ارسال بريد الكترونى من قبل  ", "danger");
+        } else {
+            debugger;
+            $.get("@Url.Action("ActiveCertification", "WorkshopParticipant")", { WorkshopParticipantId: WorkshopParticipantId }, function (res) {
+                if (res == "1") {
+                    $("#tr_" + WorkshopParticipantId).addClass("found-data");
+                     alertt("تم اعتماد جميع الشهادات ");
+
+                 } else if (res == "-1") {
+                     alertt("حدث خطأ اثناء ارسال الايميلات ","danger");
+                 }
+            });
+        }
+
+
+    }
+    
+
+
+    // function SendWhatsApp() {
+    //      $('#a_' + WorkshopParticipantId).prop('onclick', null);
+      
+    //     if (IsEmailSended=="true") {
+    //         alertt("تم ارسال بريد الكترونى من قبل  ", "danger");
+    //     } else {
+    //         debugger;
+    //         $.get("@Url.Action("SendWhatsApp", "WorkshopParticipant")", { WorkshopParticipantId: WorkshopParticipantId }, function (res) {
+    //             alert(res);
+    //             if (res == "1") {
+    //                 $("#tr_" + WorkshopParticipantId).addClass("found-data");
+    //                  alertt("تم اعتماد جميع الشهادات ");
+
+    //              } else if (res == "-1") {
+    //                  alertt("حدث خطأ اثناء ارسال الايميلات ","danger");
+    //              }
+    //         });
+    //     }
+
+    // }
+
+    function alertt(message, state) {
+        $.notify({
+            message: message,
+        },
+            {
+                type: state,
+                allow_dismiss: false,
+                newest_on_top: false,
+                mouse_over: false,
+                showProgressbar: false,
+                spacing: 10,
+                timer: 2000,
+                placement: {
+                    from: 'top',
+                    align: 'right'
+                },
+                offset: {
+                    x: 30,
+                    y: 30
+                },
+                delay: 1000,
+                z_index: 10000,
+                animate: {
+                    enter: 'animated bounce',
+                    exit: 'animated bounce'
+                }
+            });
+    }
+
+
+    </script>

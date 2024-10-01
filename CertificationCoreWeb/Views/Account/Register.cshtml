@@ -1,0 +1,196 @@
+﻿@using CertificationCoreWeb.Resources
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResource> Localizer
+@model Certification.Domain.DomainModels.RegistrationView
+
+@{
+    ViewBag.Title = Localizer["register"];
+}
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+
+
+
+
+
+<div id="titlebar" class="gradient">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+
+                <h2>@Localizer["register"]h2>
+
+                <!-- Breadcrumbs -->
+                <nav id="breadcrumbs" class="dark">
+                    <ul>
+                        <li><a href="@Url.Action("Index","Home")">@Localizer["homepage"]</a></li>
+                        <li>@Localizer["register"]</li>
+                    </ul>
+                </nav>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-xl-9 offset-xl-3">
+
+            <div class="login-register-page">
+                <!-- Welcome Text -->
+                <div class="welcome-text">
+                    <h3 style="font-size: 26px;">@Localizer["letcreateaccount"] </h3>
+                    <span>@Localizer["alreadyhaveaccount"]<a href="@Url.Action("Login","Account")">@Localizer["login!"]</a></span>
+                </div>
+
+
+                <!-- Form -->
+                @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @id = "register-account-form", @class = "row" }))
+                {
+
+                    @Html.ValidationSummary()
+                    <!-- Account Type 1:client 2:supplier -->
+                    <div class="account-type">
+                        <div>
+                            <input type="radio" name="account-type-radio" id="freelancer-radio" class="account-type-radio" @(Model.TypeId == 1 ? "checked" : "") onchange="$('.companydata').toggle(); $('#hdfTypeId').val('1');">
+                            <label for="freelancer-radio" class="ripple-effect-dark"><i class="icon-material-outline-account-circle"></i> @Localizer["client"]</label>
+                        </div>
+
+                        <div>
+                            <input type="radio" name="account-type-radio" id="employer-radio" class="account-type-radio" @(Model.TypeId == 2 ? "checked" : "") onchange="$('.companydata').toggle();$('#hdfTypeId').val('2');">
+                            <label for="employer-radio" class="ripple-effect-dark"><i class="icon-material-outline-business-center"></i>@Localizer["supplier"]</label>
+                        </div>
+                    </div>
+
+
+                    @Html.HiddenFor(x => x.TypeId, new { @id = "hdfTypeId" })
+
+                    <div class="input-with-icon-left col-xl-6 col-sm-12">
+                        <i class="icon-material-outline-account-circle"></i>
+                        @Html.TextBoxFor(x => x.Name, new { @class = "input-text with-border", @id = "emailaddress-register", @placeholder = Localizer["name"] })
+                    </div>
+
+
+                    <div class="input-with-icon-left col-xl-6 col-sm-12">
+                        <i class="icon-feather-phone"></i>
+                        @Html.TextBoxFor(x => x.Phone, new
+                   {
+                       @class = "input-text with-border",
+                       @id = "emailaddress-register",
+                       @placeholder = Localizer["phone"]
+                   })
+
+                    </div>
+
+
+                    <div class="input-with-icon-left col-xl-6 col-sm-12">
+                        <i class="icon-material-baseline-mail-outline"></i>
+                        @Html.TextBoxFor(x => x.Email, new
+                   {
+                       @class = "input-text with-border",
+                       @id = "emailaddress-register",
+                                @placeholder = Localizer["emailaddress"]
+                   })
+
+                    </div>
+
+
+
+
+
+
+                    <!--commertial -->
+                    <div class="input-with-icon-left col-xl-6 col-sm-12 " >
+                        <div class="companydata"  style="display:none;" >
+                            <i class="icon-line-awesome-file-pdf-o"></i>
+                            @Html.TextBoxFor(x => x.CommercialRegister, new
+                   {
+                       @class = "input-text with-border",
+                       @id = "CommercialRegister",
+                                    @placeholder = Localizer["commercialregister"],
+                       @required = "required",
+                       @title = " "
+                   })
+                        </div>
+                    </div>
+
+
+                    <!--password -->
+                    <div class="input-with-icon-left col-xl-6 col-sm-12" data-tippy-placement="bottom" data-tippy="" data-original-title="Should be at least 8 characters long">
+                        <i class="icon-material-outline-lock"></i>
+                        @Html.PasswordFor(x => x.Password, new
+                   {
+                       @class = "input-text with-border",
+                       @id = "password-register",
+                                @placeholder = Localizer["password"]
+                   })
+                    </div>
+
+                    <!--confirmpassword -->
+                    <div class="input-with-icon-left col-xl-6 col-sm-12">
+                        <i class="icon-material-outline-lock"></i>
+                        @Html.PasswordFor(x => x.ConfirmPassword, new
+                   {
+                       @class = "input-text with-border",
+                                @placeholder = Localizer["confirmpassword"]
+                   })
+                    </div>
+
+
+
+                 
+
+
+                    <div class="input-with-icon-left col-xl-6 col-sm-12 checkbox-register">
+                        <div class="checkbox">
+                            <input type="checkbox" id="chekcbox2" checked>
+                            <label for="chekcbox2"><span class="checkbox-icon"></span> @Localizer["agreeagreement"]</label>
+                        </div>
+                    </div>
+
+                    <!-- Button -->
+                    <button class="button full-width button-sliding-icon ripple-effect margin-top-10" type="submit" form="register-account-form">
+                        @Localizer["register"]
+                        <i class="icon-material-outline-arrow-right-alt"></i>
+                    </button>
+
+
+                }
+
+
+
+
+                <!-- Social Login -->
+                <div class="social-login-separator"><span>@Localizer["or"]</span></div>
+                <div class="social-login-buttons">
+
+                    <button class="facebook-login ripple-effect" onclick="facebookLogin()"><i class="icon-brand-facebook-f"></i> @Localizer["logfacebook"]</button>
+                    <button class="google-login ripple-effect" onclick="googleLogin()"><i class="icon-brand-google-plus-g"></i> @Localizer["loggoogle"]</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="margin-top-70"></div>
+
+
+
+@if (Model.TypeId == 1)
+{
+    <script>
+        $('.companydata').hide();
+    </script>
+}
+else
+{
+    <script>
+        $('.companydata').show();
+    </script>
+}
+
+@section scripts{
+
+    <script src="~/Scripts/firebase-config.js"></script>
+}

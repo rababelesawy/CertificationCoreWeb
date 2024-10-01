@@ -1,0 +1,114 @@
+﻿@model Certification.Domain.DomainModels.LoginView
+
+
+@{
+    ViewBag.Title = "تسجيل دخول";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+
+    <link rel="icon" href="~/Content/assets/images/logo.jpg" type="image/x-icon" />
+    <link rel="shortcut icon" href="~/Content/assets/images/logo.jpg" type="image/x-icon" />
+    <title> تسجيل دخول </title>
+
+    <!--Google font-->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,500,600,700" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/css/fontawesome.css">
+
+    <!-- ico-font -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/css/icofont.css">
+
+    <!-- Themify icon -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/css/themify.css">
+
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/css/bootstrap.css">
+
+    <!-- App css -->
+    @*<link rel="stylesheet" type="text/css" href="~/Content/assets/css/style.css">*@
+    <link rel="stylesheet" type="text/css" href="~/Content/new_main.css">
+
+    <!-- Responsive css -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/css/responsive.css">
+
+    <style>
+        .input-validation-error {
+            border: 1px dashed red;
+        }
+    </style>
+
+</head>
+
+
+<body class="authentication" dir="rtl">
+
+    <!-- Container start -->
+    <div class="container">
+
+
+        <div class="row justify-content-md-center">
+            <div class="col-xl-4 col-lg-5 col-md-6 col-sm-12">
+                <div class="login-screen">
+                    <div class="login-box">
+                        <a href="javascript:void(0)" class="login-logo">
+                            <img src="~/Content/assets/images/logo.jpg" alt="Wafi Admin Dashboard" />
+                        </a>
+                        <span id="divError" style="color:red"></span>
+                        @using (Html.BeginForm(" ", " ", FormMethod.Post, new { @class = "theme-form", @id = "login-form" }))
+                        {
+                            @Html.HiddenFor(x => x.Token)
+                            <div class="form-group">
+                                @Html.TextBoxFor(x => x.UserName, new { @type = "text", @class = "form-control ", @placeholder = "اسم المستخدم" })
+                                @*<input type="text" class="form-control" placeholder="اسم المستخدم" />*@
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(x => x.Password, new { @type = "password", @class = "form-control", @placeholder = "كلمة المرور" })
+                                @*<input type="password" class="form-control" placeholder="كلمة المرور" />*@
+                            </div>
+                            <div class="actions mb-4 ">
+                                <button type="button" class="btn btn-color btn-primary" onclick="Login()">تسجيل دخول</button>
+                            </div>
+                        }
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <!-- Container end -->
+    <script src="~/Content/assets/js/jquery-3.2.1.min.js"></script>
+
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+
+    <script>
+    function Login() {
+        debugger;
+        if ($("#login-form").valid()) {
+            $.post("@Url.Action("Login", "Account")", $("#login-form").serialize(), function (res) {
+                if (res == "1") {     
+                    window.location.href = "/";
+                }
+                else {
+                    $("#divError").text("اسم المستخدم او كلمه المرور غير صحيحه");
+                }
+            });
+
+        }
+    }
+    </script>
+</body>
+
+</html>
+
+

@@ -1,0 +1,12 @@
+﻿@model Ifa.Model.FirstPage
+
+
+
+@*<a href="@Model.GetUrl()" @Ifa.Helpers.IfaHelper.GetAjaxAttributes((AjaxOptions)ViewData["ajaxOptions"])>First</a>*@
+
+@*<li class="pagination-arrow"><a href="@Model.GetUrl()" @Ifa.Helpers.IfaHelper.GetAjaxAttributes((AjaxOptions)ViewData["ajaxOptions"]) 
+                                class="ripple-effect"><i class="icon-material-outline-keyboard-arrow-left"></i></a></li>*@
+
+<li class="page-item"><a class="page-link" href="@Model.GetUrl()" @Ifa.Helpers.IfaHelper.GetAjaxAttributes((System.Web.Mvc.Ajax.AjaxOptions)ViewData["ajaxOptions"]) 
+                         data-original-title="" title="">
+     </a></li>

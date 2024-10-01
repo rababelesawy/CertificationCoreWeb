@@ -1,0 +1,143 @@
+﻿@using CertificationCoreWeb.Resources
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResource> Localizer
+@model string
+
+@Html.Hidden("", null, new { @id = "hdfMultiAttachments" })
+
+<div class="uploadButton margin-top-0">
+
+    @using (Html.BeginForm("", "", FormMethod.Post,
+           new { @id = "frmAddMultiFile", @enctype = "multipart/form-data" }))
+    {
+        <input class="uploadButton-input" type="file" accept="image/*, application/pdf" id="multiFileImg" onchange="uploadMultiFile()" multiple>
+        <label class="uploadButton-button ripple-effect" for="multiFileImg">
+            @Localizer["upload"]
+        </label>
+    }
+    <img src="~/Content/images/loader.gif" style="margin-left: 10px;margin-top: 2px; display:none;" id="loaderImg" height="40px" />
+</div>
+
+
+
+
+
+<div class="row" id="divmultiAttachments"></div>
+
+
+<script>
+
+
+        $(function () {
+
+
+
+            $('#hdfMultiAttachments').val('@Model');
+
+        @if (!string.IsNullOrEmpty(Model))
+        {
+
+        <text>
+            //$('#hdfMultiAttachments').val($('#hdfMultiAttachments').val() + ",")
+            $.each($('#hdfMultiAttachments').val().split(','), function (index, value) {
+
+                if (value != "") {
+
+                    var tr = `<div class="col-md-3" id="div_${value}">
+                         <img src="/Attachments/${value}.jpg" style="width:40px;" />
+                            <span> ${value}.jpg </span>
+                        <span class="icon-feather-x" style="color:red"   value="@Localizer["delete"]" onclick="removeMultiItem(${value})" ></span></div>`;
+                    $('#divmultiAttachments').append(tr);
+                }
+            });
+
+            $('#hdfMultiAttachments').val($('#hdfMultiAttachments').val().substring(0, $('#hdfMultiAttachments').val().length));
+      </text>
+            }
+        });
+
+        function uploadMultiFile() {
+
+
+            var formdata = new FormData();
+            var fileInput = document.getElementById('multiFileImg');
+            if (fileInput.files.length > 0) {
+
+                document.getElementById("loaderImg").style.display = "block";
+
+                for (i = 0; i < fileInput.files.length; i++) {
+                    formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                }
+
+
+                var desc = "qqq";
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '@Url.Action("UploadFile", "Base")');
+                xhr.send(formdata);
+
+                xhr.onreadystatechange = function (ress) {
+
+
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var res = JSON.parse(ress.currentTarget.responseText);
+
+                        if (res.length > 0) {
+                            for (i = 0; i < res.length; i++) {
+                                var tr = `<div class="col-md-3" id="div_` + res[i].id + `">
+                                     <img src="${res[i].path}" />
+                                     <span>${ (res[i].name.length > 20 ? res[i].name.substring(0, 19) : res[i].name) }  </span>
+                                     <span> <i class="icon-feather-x" style="color:red"  onclick="removeMultiItem(${res[i].id})" value="@Localizer["delete"]"  ></i></span>
+
+                                    </div>`;
+                                $('#divmultiAttachments').append(tr);
+
+
+                                var newIds = $('#hdfMultiAttachments').val() != "" ? $('#hdfMultiAttachments').val() + "," + res[i].id.toString() : res[i].id;
+                                $('#hdfMultiAttachments').val(newIds);
+                                $("#multiFileImg").val("");
+                                document.getElementById("loaderImg").style.display = "none";
+
+                            }
+                            document.getElementById("loaderImg").style.display = "none";
+                        }
+                    }
+                }
+               
+                
+            }
+            else {
+
+                console.log("no files");
+        }
+   
+        }
+
+
+        function removeMultiItem(id) {
+
+            $('#div_' + id).remove();
+            $("#multiFileImg").val("");
+            $('#hdfMultiAttachments').val(removefromlst(id.toString(), $('#hdfMultiAttachments').val().split(',')));
+        }
+
+
+
+        function removefromlst(val, lst) {
+
+            var index = lst.indexOf(val);
+            if (index > -1) {
+                lst.splice(index, 1);
+            }
+
+            return lst.toString();
+        }
+
+
+
+
+
+
+</script>
+
+
+

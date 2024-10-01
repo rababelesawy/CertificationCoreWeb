@@ -1,0 +1,11 @@
+﻿@model int?
+
+
+@if (Model != null)
+{
+<img src="~/Attachments/@(Model.ToString() + ".jpg")"  style="width:80px;height:80px;" />
+}
+else
+{
+<img src="~/Content/images/bluelogo.png"   style="width:80px;height:80px;" />
+}

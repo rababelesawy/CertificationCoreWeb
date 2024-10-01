@@ -1,0 +1,164 @@
+﻿@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+
+
+@model IPagedList<Certification.Domain.Entities.Course>
+
+
+
+<table class="table custom-table m-0">
+    <thead>
+        <tr>
+            <th>اسم الدورة </th>
+            <th> المدرب </th>
+            <th>الصورة</th>
+            <th>  تاريخ الدورة </th>
+            <th>  تاريخ الأضافة </th>
+            <th>   </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Count() != 0)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+
+                    <td>@item.CourseName</td>
+                    <td>@item.CoachName</td>
+                    <td><img src="@string.Concat("../Attachments/",item.CertificationImage,".jpg")" width="100" height="80" /></td>
+                    <td>@Convert.ToDateTime(item.CourseDate).ToString("dd/MM/yyyy")</td>
+                    <td>@Convert.ToDateTime(item.CreationDate).ToString("dd/MM/yyyy")</td>
+
+                    <td>
+
+                        <div class="row">
+                            <div class="col-1 ml-4">
+                                <a href="@Url.Action("AddCourse", "Course",new { id=item.CourseId})" class="btn btn-print">
+                                    <i class="fa fa-pencil"></i>
+                                    &nbsp;تعديل
+                                </a>
+                            </div>
+                            <div class="col-3 ">
+                                @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "frmAddFile", @enctype = "multipart/form-data" }))
+                                {
+                                    <input class="btn btn-info btn-sm"
+                                           type="file" style="display:none;" accept="image/*,
+                                                    application/pdf,application/xlsx" id="upload_@item.CourseId" name="file" multiple="" onchange="uploadWorkshopParticipant(@item.CourseId)">
+
+
+                                    <a href="javascript:void(0)" onclick="$('#upload_@item.CourseId').click()" class="btn btn-print" title="رفع ملف الاكسل الخاص بالدورة">
+                                        <i class="fa fa-print"></i>
+                                        &nbsp; رفع اكسيل شيت
+                                    </a>
+
+
+                                }
+                            </div>
+
+                            <div class="col-1 ml-4">
+
+                                <a id="submit" class="btn btn-certificate" href="javascript:void(0)" onclick="ActiveCertifications(@item.CourseId);" title="ارسال بريد الالكتروني بالشهادة">
+                                    <i class="fa fa-thumbs-up"></i>
+                                    &nbsp; اعتماد الشهادات
+                                </a>
+                            </div>
+                        </div>
+
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">لا يوجد دورات لعرضها</td>
+            </tr>
+        }
+
+
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="7">
+                <ul class="pagination pagination-primary"></ul>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+
+<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+    <div class="row gutters">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="mr-p">
+                <nav aria-label="Page navigation example">
+                    @Html.PagedListPager(Model,
+                             page => Url.Action("CourseList", "Course", new { itemsPerPage = Model., currentPage = page, theme = (string)ViewBag.Theme }),
+                             new PagedListRenderOptions
+                    {
+                        LiElementClasses = new[] { "page-item" },
+                        PageClasses = new[] { "page-link" }
+                    })
+                </nav>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="~/Content/assets/js/jquery-3.2.1.min.js"></script>
+
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+<script src="~/Scripts/modernizr-2.6.2.js"></script>
+
+
+<script src="~/Scripts/Application.js"></script>
+
+<script>
+    function uploadWorkshopParticipant(CourseId) {
+        //$('.loader-box').show();
+        debugger;
+        var formdata = new FormData();
+        var fileInput = document.getElementById('upload_' + CourseId);
+
+        if (fileInput.files.length > 0) {
+            for (i = 0; i < fileInput.files.length; i++) {
+                formdata.append(fileInput.files[i].name, fileInput.files[i]);
+            }
+
+            formdata.append('CourseId', CourseId);
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('POST', '@Url.Action("Upload", "WorkshopParticipant")');
+            xhr.send(formdata);
+
+
+            xhr.onreadystatechange = function (ress) {
+
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    alert("تم الحفظ بنجاح");
+                    //$('.loader-box').hide();
+                    //$("#uploadEquipment").html("").append(ress.target.response);
+                }
+
+                //if (ress == "1") {
+                //    alert("تم الحفظ بنجاح");
+                //}
+            }
+
+
+
+        } else {
+            console.log("no files");
+        }
+
+    }
+
+</script>

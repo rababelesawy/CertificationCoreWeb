@@ -1,0 +1,134 @@
+﻿
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>certification</title>
+
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            direction: rtl;
+            text-align: right;
+            color: #2e323c;
+            min-height: 100%;
+            position: relative;
+            text-align: right;
+            overflow-x: hidden;
+            overflow-y: hidden;
+        }
+
+        .container-fluid {
+            width: 100%;
+            height: 100%;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        .card {
+            background: #ffffff;
+            box-shadow: none;
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 2px;
+        }
+
+        .text-center {
+            text-align: center !important;
+        }
+
+        .img-fluid {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .card .card-header {
+            background: transparent;
+            border: 0;
+            padding: 1rem 1.25rem .5rem 1.25rem;
+        }
+
+        .card-title {
+            font-size: 31px;
+            font-weight: 600;
+            margin: 46px 0;
+            color: #38629d;
+        }
+
+        .card .card-body .card-text {
+            margin-bottom: 1rem;
+            line-height: 180%;
+        }
+
+        .card-text {
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        a {
+            text-decoration: none;
+            color: #38629d;
+            font-weight: bolder;
+        }
+
+        .card .card-footer {
+            background: transparent;
+            border-top: 0;
+            padding: 1rem 1.25rem;
+        }
+
+        h4 {
+            font-size: 25px;
+            line-height: 2;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body dir="rtl">
+
+    <div class="container-fluid">
+
+        <div class="card">
+            <div class="card-header">
+
+                <div class="text-center">
+                    <img src="https://cert.repoteq.com/Content/assets/images/kaulogo.jpg" class="img-fluid" alt="Responsive image" width="100px;" height="200px;" style="max-width:200px;">
+                </div>
+
+            </div>
+            <div class="card-body">
+
+                <div class="card-title text-center" dir="rtl">
+                    شهادة حضور  {CourseName}
+                </div>
+
+                <p class="card-text text-center" dir="rtl">نشكركم على مشاركتكم المتميزة في حضور : (  <span style="color: #38629d; font-weight: 700" dir="rtl"> {CourseName}</span> ) والتى عقدت بتاريخ: <span style="color: #016241; font-weight: 700"> {CourseDate}</span> </p>
+                <p class="card-text text-center" dir="rtl">تحت أشراف المدرب: (  <span style="color: #38629d; font-weight: 700" dir="rtl"> {CoachName}</span> ) </p>
+
+                <p class="card-text text-center">
+                    ولتحميل الشهادة الخاصة بكم الرجاء الضغط على الرابط التالي:
+                    <br>  <a href="{link}">اضغط هنا</a>
+                </p>
+
+            </div>
+            <div class="card-footer text-center">
+                <h4>
+                    والله ولي التوفيق
+                    <br>
+                     شؤون المكتبات - الشهادات
+                </h4>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

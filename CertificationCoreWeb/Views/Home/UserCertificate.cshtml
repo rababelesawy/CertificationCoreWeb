@@ -1,0 +1,161 @@
+﻿@model Certification.Domain.Entities.WorkshopParticipant
+
+
+@{
+    Layout = null;
+
+}
+
+<link rel="icon" href="~/Content/assets/images/logo.jpg">
+
+
+<title>الشهادة</title>
+
+<!--Google font-->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Raleway:300,400,500,600,700" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Cairo&display=swap" rel="stylesheet">
+
+
+<!-- Font Awesome -->
+<link rel="stylesheet" type="text/css" href="~/Content/assets/css/fontawesome.css">
+
+<!-- ico-font -->
+<link rel="stylesheet" type="text/css" href="~/Content/assets/css/icofont.css">
+
+<!-- Themify icon -->
+<link rel="stylesheet" type="text/css" href="~/Content/assets/css/themify.css">
+
+<!-- Flag icon -->
+<link rel="stylesheet" type="text/css" href="~/Content/assets/css/flag-icon.css">
+
+<!-- Bootstrap css -->
+<link rel="stylesheet" type="text/css" href="~/Content/assets/css/bootstrap.css">
+
+
+
+<!-- Responsive css -->
+<link rel="stylesheet" type="text/css" href="~/Content/assets/css/responsive.css">
+<!-- DatePicker css -->
+<link rel="stylesheet" type="text/css" href="~/Content/assets/css/date-picker.css">
+
+
+
+
+
+<style>
+    html * {
+        font-family: 'Cairo', sans-serif;
+    }
+
+    .input-validation-error {
+        border: 1px dashed red !important;
+    }
+
+    body {
+        overflow-x: hidden;
+        overflow-y: hidden;
+    }
+</style>
+
+
+
+<link rel="stylesheet" type="text/css" href="~/Content/new_main.css">
+<!-- Icomoon Font Icons css -->
+<link rel="stylesheet" href="~/Content/fonts/style.css">
+
+
+<div class="page-wrapper rtl">
+
+
+    <div class="page-body-wrapper">
+
+
+        <div class="page-body" style="padding-top:75px;">
+
+            <div class="container-fluid">
+
+                <div class="content-wrapper" style="background: #ffffff; border: 1px solid #e4e9f1; width:100%; height:100%;">
+                    <div class="container-fluid">
+                        <div class="row gutters">
+
+                            <div class="col-sm-12">
+                                <div style="margin-top:15%">
+
+                                    <div class="card-body text-center">
+
+                                        <h1 class="header-certificate-done">
+                                            <i class="fa fa-check-circle"></i>
+                                            تم طباعة الشهادة ,الرجاء تحميلها
+                                        </h1>
+                                        <a href="@Url.Action("PrintCertification", "Home",new { id=Model.WorkshopParticipantId})" class="btn btn-cancel">
+                                            <i class="fa fa-download"></i>
+                                            &nbsp; من هنا
+                                        </a>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script src="~/Content/assets/js/jquery-3.2.1.min.js"></script>
+<script src="~/Content/assets/js/jquery.ui.min.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+
+
+
+<!-- Bootstrap js-->
+<script src="~/Content/assets/js/bootstrap/popper.min.js"></script>
+<script src="~/Content/assets/js/bootstrap/bootstrap.js"></script>
+
+<!-- Sidebar jquery-->
+<script src="~/Content/assets/js/sidebar-menu.js"></script>
+
+
+
+<!-- Theme js-->
+<script src="~/Content/assets/js/script.js"></script>
+@*<script src="~/Content/assets/js/chat-sidebar/chat.js"></script>*@
+
+
+<!--Datepicker js-->
+<script src="~/Content/assets/js/date-picker/datepicker.js"></script>
+<script src="~/Content/assets/js/date-picker/datepicker.en.js"></script>
+<script src="~/Content/assets/js/date-picker/datepicker.ar.js"></script>
+<script src="~/Content/assets/js/date-picker/datepicker.custom.js"></script>
+
+
+
+
+
+<!-- validation scripts -->
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+
+
+<!-- bootstrap notify js -->
+<script src="~/Content/assets/js/notify/bootstrap-notify.min.js"></script>
+<script src="~/Content/assets/js/notify/notify-script.js"></script>
+
+
+
+
+
+
+
+

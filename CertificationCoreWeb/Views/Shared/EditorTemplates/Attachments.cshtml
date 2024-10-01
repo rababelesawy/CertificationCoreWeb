@@ -1,0 +1,101 @@
+﻿@using CertificationCoreWeb.Resources
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResource> Localizer
+@model string
+
+
+
+
+    @Html.Hidden("", null, new { @id = "hdfAttachments" })
+
+
+    <div class="uploadButton margin-top-0">
+
+        @using (Html.BeginForm("", "", FormMethod.Post,
+               new { @id = "frmAddFile", @enctype = "multipart/form-data" }))
+        {
+            <input class="uploadButton-input" type="file" accept="image/*, application/pdf" id="upload" name="file" onchange="uploadFile()" multiple="">
+            <label class="uploadButton-button ripple-effect" for="upload">
+                @Localizer["upload"]
+            </label>
+        }
+
+        <div class="uploadButton-file-name" id="divAttachments">
+        </div>
+
+
+    </div>
+
+
+
+
+    <script>
+
+
+    $(function () {
+        $('#hdfAttachments').val(@Model);
+
+        if (@Model!= 0) {
+            var tr = `<div  id="div_@Model"  >
+            <img src="/Attachments/@string.Concat(Model.ToString(), ".jpg")" style="width:40px;" />
+            <span>@string.Concat(Model.ToString(), ".jpg") </span>
+                <span class="icon-feather-x" style="color:red"   onclick="removeItem(@Model)" ></span></div>`;
+
+            $('#divAttachments').html("").append(tr);
+        }
+    });
+
+    function uploadFile() {
+        debugger;
+        var formdata = new FormData();
+        var fileInput = document.getElementById('upload');
+        if (fileInput.files.length > 0) {
+            for (i = 0; i < fileInput.files.length; i++) {
+                formdata.append(fileInput.files[i].name, fileInput.files[i]);
+            }
+
+
+            var desc = "qqq";
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '@Url.Action("UploadFile", "Base")');
+            xhr.send(formdata);
+
+            xhr.onreadystatechange = function (ress) {
+
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var res = JSON.parse(ress.currentTarget.responseText);
+
+                    if (res.length > 0) {
+                        for (i = 0; i < res.length; i++) {
+
+
+                            var tr = `<div  id="div_` + res[i].id + `"  ><img src="` + res[i].path + `" style="width:40px;" /><span>` + res[i].name + `</span>
+                <span class="icon-feather-x" style="color:red"   onclick="removeItem(`+ res[i].id + `)" ></span></div>`;
+
+                            $('#divAttachments').html("").append(tr);
+                            $('#hdfAttachments').val(res[i].id);
+
+                        }
+                    }
+
+                }
+            }
+        } else {
+            console.log("no files");
+        }
+
+    }
+
+
+    function removeItem(id) {
+        $('#div_' + id).remove();
+        $('#hdfAttachments').val("0");
+        $("#upload").val("");
+
+        // make request to delete physical  iamge from server
+
+    }
+
+    </script>
+
+
