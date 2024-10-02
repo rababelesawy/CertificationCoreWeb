@@ -2,6 +2,7 @@
 @using Microsoft.Extensions.Localization
 @inject IStringLocalizer<SharedResource> Localizer
 @model Certification.Domain.DomainModels.RegistrationView
+@using FormMethod = Microsoft.AspNetCore.Mvc.Rendering.FormMethod
 
 @{
     ViewBag.Title = Localizer["register"];
@@ -17,7 +18,7 @@
         <div class="row">
             <div class="col-md-12">
 
-                <h2>@Localizer["register"]h2>
+                <h2>@Localizer["register"]</h2>
 
                 <!-- Breadcrumbs -->
                 <nav id="breadcrumbs" class="dark">
