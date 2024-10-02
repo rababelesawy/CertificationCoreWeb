@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Certification.Domain", "Cer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Certifiaction.Infrastructure", "Certifiaction.Infrastructure\Certifiaction.Infrastructure.csproj", "{24FFA94F-ADFB-4646-B051-7C47DBA7D4A0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CertificationWeb", "CertificationWeb\CertificationWeb.csproj", "{ADE28A84-1390-4E3F-BC82-60B941A7D2F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{24FFA94F-ADFB-4646-B051-7C47DBA7D4A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24FFA94F-ADFB-4646-B051-7C47DBA7D4A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24FFA94F-ADFB-4646-B051-7C47DBA7D4A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADE28A84-1390-4E3F-BC82-60B941A7D2F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADE28A84-1390-4E3F-BC82-60B941A7D2F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADE28A84-1390-4E3F-BC82-60B941A7D2F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADE28A84-1390-4E3F-BC82-60B941A7D2F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

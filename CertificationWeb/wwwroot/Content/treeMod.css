@@ -1,0 +1,22 @@
+﻿body {
+}
+
+.jstree-anchor{
+    width: 100% !important;
+
+}
+
+.jstree-anchor:hover .icons-tr{
+    display: block;
+}
+
+.icons-tr{
+    padding: 0 10px;
+    display: none;
+    border-radius: 2px;
+    text-align:center;
+}
+
+.icons-tr .fa{
+    cursor: pointer;
+}

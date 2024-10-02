@@ -1,0 +1,62 @@
+﻿@model Certification.Domain.DomainModels.ChangeImageView
+
+
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "frmChangePhoto" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.Id)
+    
+
+<div class="form-group col-md-12">
+    <label>الصورة</label>
+    @Html.Editor("ImageId", "Image", new { htmlAttributes = new { @id = "ImageId" } })
+</div>
+
+<div align="center" class="card-footer" style="padding: 10px;">
+
+    <a href="#" class="btn btn-save" onclick="SaveChangePhoto()"><i class="fa fa-save"></i> حفظ </a>
+    <a class="btn btn-cancel" style="margin-right:5px;" onclick="ResetChangePhoto()"><i class="fa fa-times"></i> إلغاء</a>
+
+</div>
+
+}
+<script src="~/Content/assets/js/jquery-3.2.1.min.js"></script>
+@*<script>
+    $("#uploadedImg").change(function () {
+        debugger;
+        uploadedImg("Admin", 1);
+    });
+</script>*@
+
+<script>
+
+    function SaveChangePhoto() {
+        debugger;
+     if ($("#frmChangePhoto").valid()) {
+         $.post("@Url.Action("ChangePhoto", "Account")", $("#frmChangePhoto").serialize(), function (res) {
+
+             ResetChangePhoto();
+             debugger;
+             //$("#ProfileImg").attr("src", $("#imagename").val());
+                alertt("تم التعديل بنجاح", "success");
+            })
+        }
+
+    }
+    function ResetChangePhoto() {
+        debugger;
+        var url = '@Url.Action("ChangePhoto", "Account")';
+        $.get(url, function (res) {
+            $("#ChangePhoto").html("").append(res);
+        });
+        return false;
+
+    }
+</script>
+
+
+
+
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+

@@ -1,0 +1,135 @@
+﻿@model int
+
+@Html.Hidden("", null, new { @id = "hdfAttachments" })
+
+
+
+<div class="card-body">
+    <div class="row">
+        <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+            <div class="form-group">
+                <label for="inputName">إختر الشهادة</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" accept="image/*, application/pdf"
+                           aria-describedby="inputGroupFileAddon01" id="upload" name="file" onchange="uploadFile()" multiple="">
+                    <label class="custom-file-label" for="upload">حدد الشهادة</label>
+                </div>
+            </div>
+        </div>
+
+        @*<div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+            <div class="text-right">
+                <button type="button" onclick="showDesign()"
+                        data-toggle="modal" data-target=".bd-example-modal-lg" style="margin-top:28px;" name="submit" class="btn btn-success"><i class="fa fa-eye"></i>  معاينة</button>
+            </div>
+        </div>*@
+    </div>
+
+    <div id="divAttachments">
+
+        @*<div class="text-center">
+            <img style="width:1000px; height:700px;" src="~/Content/assets/images/cer.png" class="img-fluid" alt="Responsive image">
+        </div>*@
+
+
+        @*<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="text-right" style="padding:20px 0 20px 0;">
+                <a  onclick="removeItem(@Model)" class="btn btn-dark">
+                    <i class="fa fa-trash"></i>
+                    حذف
+                </a>
+            </div>
+        </div>*@
+
+    </div>
+</div>
+
+<script src="~/Content/assets/js/jquery-3.2.1.min.js"></script>
+<script>
+
+
+    $(function () {
+        debugger;
+        $('#hdfAttachments').val(@Model);
+
+        if (@Model!= 0) {
+            var tr = `<div  id="div_@Model"  class="text-center">
+            <img src="/Attachments/@string.Concat(Model.ToString(), ".jpg")" style="width:1050px; height:720px;" class="img-fluid" />
+          
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                   <div class="text-right" style="padding:20px 0 20px 0;">
+                       <a  onclick="removeItem(@Model)" class="btn btn-dark" style="color:#ffffff;">
+                           <i class="fa fa-trash"></i>
+                           حذف
+                       </a>
+                   </div>
+                  </div>    </div>`;
+
+            $('#divAttachments').html("").append(tr);
+        }
+    });
+
+
+
+    function uploadFile() {
+        debugger;
+        var formdata = new FormData();
+        var fileInput = document.getElementById('upload');
+        if (fileInput.files.length > 0) {
+            for (i = 0; i < fileInput.files.length; i++) {
+                formdata.append(fileInput.files[i].name, fileInput.files[i]);
+            }
+
+
+            var desc = "qqq";
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '@Url.Action("UploadFile", "Base")');
+            xhr.send(formdata);
+
+            xhr.onreadystatechange = function (ress) {
+                debugger;
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var res = JSON.parse(ress.currentTarget.responseText);
+
+                    //if (res.length > 0) {
+                    //    for (i = 0; i < res.length; i++) {
+
+
+                    var tr = `<div   class="text-center"> <img  id="div_` + res.id + `" src="` + res.path + `" style="width:1050px; height:720px;"  class="img-fluid" alt="Responsive image"/>
+                                </div>                              
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                  <div class="text-right" style="padding:20px 0 20px 0;">
+                                      <a onclick="removeItem(`+ res.id + `)" class="btn btn-dark" style="color:#ffffff;">
+                                          <i class="fa fa-trash"></i>
+                                          حذف
+                                      </a>
+                                  </div>
+                              </div>`;
+
+
+
+                            $('#divAttachments').html("").append(tr);
+                            $('#hdfAttachments').val(res.id);
+
+                    //    }
+                    //}
+
+                }
+            }
+        } else {
+            console.log("no files");
+        }
+
+    }
+
+
+    function removeItem(id) {
+        $('#div_' + id).remove();
+        $('#hdfAttachments').val("0");
+        $("#upload").val("");
+
+        // make request to delete physical  iamge from server
+
+    }
+
+</script>

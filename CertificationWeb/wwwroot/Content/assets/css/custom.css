@@ -1,0 +1,152 @@
+﻿
+html * {
+    font-family: 'Cairo', sans-serif;
+}
+
+body {
+}
+
+a {
+    position: relative;
+}
+
+
+    /*pop up card-code*/
+
+    a#popDiv {
+        position: relative;
+        display: inline-block;
+    }
+
+        a#popDiv div#card-i::before {
+            content: " ";
+            border-top: 7.5px solid transparent;
+            border-bottom: 7.5px solid transparent;
+            border-left: 15px solid gray;
+            position: absolute;
+            top: 5px;
+            right: 0px;
+        }
+
+        a#popDiv div#card-i {
+            position: absolute;
+            top: 0px;
+            display: none;
+            z-index: 100000;
+            width: 500px;
+        }
+
+        a#popDiv:hover div#card-i {
+            display: block;
+        }
+
+
+
+
+
+
+.form-group label {
+    font-weight: bold;
+}
+
+
+.no-padding {
+    padding: 0 !important;
+}
+
+
+.frm-custom label, .frm-custom .help-block {
+    display: none;
+}
+
+.exam-limit {
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
+.comingsoon {
+    min-height: auto;
+}
+
+
+
+
+
+
+
+.card-header {
+    padding: 10px !important;
+}
+
+
+
+    .card-header h3, .card-header h5 {
+        font-size: 1rem !important;
+    }
+
+.i-margin {
+    margin-right: 0 !important;
+    margin-left: 10px !important;
+}
+
+.tab-pane {
+    padding-top: 20px !important;
+}
+
+
+.lblhidden {
+    visibility: hidden;
+}
+
+
+.form-group label {
+    font-weight: bold;
+}
+
+body {
+    font-family: 'Cairo', sans-serif !important;
+}
+
+.table thead tr:first-child {
+    background-color: lightblue;
+}
+
+
+.dropdown-menu, span.twitter-typeahead .tt-menu {
+    text-align: right;
+}
+
+
+.devhidden {
+    display: none;
+}
+
+.lightblue {
+    background-color: lightblue;
+}
+
+
+.padding-top {
+    padding-top: 15px;
+}
+
+.input-validation-error {
+    border: 1px dashed #FF5370;
+}
+
+.divhidden {
+    display: none;
+}
+
+.isDisabled {
+    color: currentColor;
+    cursor: not-allowed;
+    opacity: 0.5;
+    text-decoration: none;
+}
+
+
+
+.QuestionRight {
+    border: 2px dashed green;
+}
