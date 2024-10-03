@@ -45,46 +45,46 @@ namespace CertificationCoreWeb.Controllers
         
     }
 
-        public ActionResult WorkshopParticipants(int itemsPerPage = 10, int currentPage = 1)
-        {
-            ViewBag.Theme = "custom";
-            ViewBag.type = 1;
-            ViewBag.index = itemsPerPage * (currentPage - 1) + 1;
+        //public ActionResult WorkshopParticipants(int itemsPerPage = 10, int currentPage = 1)
+        //{
+        //    ViewBag.Theme = "custom";
+        //    ViewBag.type = 1;
+        //    ViewBag.index = itemsPerPage * (currentPage - 1) + 1;
 
-            var WorkshopParticipants = _dB.WorkshopParticipants.Where(x => x.Course.CreatedBy == CurrentUser.UserId).ToList();
+        //    var WorkshopParticipants = _dB.WorkshopParticipants.Where(x => x.Course.CreatedBy == CurrentUser.UserId).ToList();
 
-            WorkshopParticipantModel res = new WorkshopParticipantModel
-            {
-                WorkshopParticipantSearchModel = new WorkshopParticipantSearchModel { },
-                WorkshopParticipants = WorkshopParticipants.Where(x => x.Course.CreatedBy == CurrentUser.UserId).OrderByDescending(x => x.CourseId /*x.WorkshopParticipantId*/).AsQueryable().Page(currentPage),
-                TotalUser = WorkshopParticipants.Count,
-                PrintUser = WorkshopParticipants.Where(x => x.Course.CreatedBy == CurrentUser.UserId && x.IsPrinted == true).Count(),
-                NonPrintUser = WorkshopParticipants.Where(x => x.Course.CreatedBy == CurrentUser.UserId && x.IsPrinted != true).Count()
-            };
+        //    WorkshopParticipantModel res = new WorkshopParticipantModel
+        //    {
+        //        WorkshopParticipantSearchModel = new WorkshopParticipantSearchModel { },
+        //        WorkshopParticipants = WorkshopParticipants.Where(x => x.Course.CreatedBy == CurrentUser.UserId).OrderByDescending(x => x.CourseId /*x.WorkshopParticipantId*/).AsQueryable().Page(currentPage),
+        //        TotalUser = WorkshopParticipants.Count,
+        //        PrintUser = WorkshopParticipants.Where(x => x.Course.CreatedBy == CurrentUser.UserId && x.IsPrinted == true).Count(),
+        //        NonPrintUser = WorkshopParticipants.Where(x => x.Course.CreatedBy == CurrentUser.UserId && x.IsPrinted != true).Count()
+        //    };
 
-            return PartialView("_WorkshopParticipantList", res);
-        }
+        //    return PartialView("_WorkshopParticipantList", res);
+        //}
 
-        [HttpPost]
-        public ActionResult WorkshopParticipantSearch(WorkshopParticipantSearchModel model,int itemsPerPage = 10, int currentPage = 1)
-        {
-            ViewBag.Theme = "custom";
-            ViewBag.index = itemsPerPage * (currentPage - 1) + 1;
-            var WorkshopParticipants = _dB.WorkshopParticipants.Where(x => x.Course.CreatedBy == CurrentUser.UserId && (model.Name == null || x.Name.Contains(model.Name)) &&
-                 (model.Phone == null || x.Phone == model.Phone)  &&(model.CourseId==0||x.CourseId==model.CourseId)&&
-                 (model.CoachName==null||x.Course.CoachName.Contains(model.CoachName))).ToList();
+        //[HttpPost]
+        //public ActionResult WorkshopParticipantSearch(WorkshopParticipantSearchModel model,int itemsPerPage = 10, int currentPage = 1)
+        //{
+        //    ViewBag.Theme = "custom";
+        //    ViewBag.index = itemsPerPage * (currentPage - 1) + 1;
+        //    var WorkshopParticipants = _dB.WorkshopParticipants.Where(x => x.Course.CreatedBy == CurrentUser.UserId && (model.Name == null || x.Name.Contains(model.Name)) &&
+        //         (model.Phone == null || x.Phone == model.Phone)  &&(model.CourseId==0||x.CourseId==model.CourseId)&&
+        //         (model.CoachName==null||x.Course.CoachName.Contains(model.CoachName))).ToList();
 
-            WorkshopParticipantModel res = new WorkshopParticipantModel
-            {
-                WorkshopParticipantSearchModel = model,
-                WorkshopParticipants = WorkshopParticipants.Where(x => x.Course.CreatedBy == CurrentUser.UserId && (model.IsPrinted == null || x.IsPrinted == model.IsPrinted)&& (model.IsSended == null || x.IsEmailSended == model.IsSended)).OrderByDescending(x =>x.CourseId /*x.WorkshopParticipantId*/).AsQueryable().Page(currentPage),
-                NonPrintUser= WorkshopParticipants.Where(x=> x.Course.CreatedBy == CurrentUser.UserId && x.IsPrinted!=true).Count(),
-                TotalUser= WorkshopParticipants.Count(),
-                PrintUser= WorkshopParticipants.Where(x => x.Course.CreatedBy == CurrentUser.UserId && x.IsPrinted == true).Count()
-            };
+        //    WorkshopParticipantModel res = new WorkshopParticipantModel
+        //    {
+        //        WorkshopParticipantSearchModel = model,
+        //        WorkshopParticipants = WorkshopParticipants.Where(x => x.Course.CreatedBy == CurrentUser.UserId && (model.IsPrinted == null || x.IsPrinted == model.IsPrinted)&& (model.IsSended == null || x.IsEmailSended == model.IsSended)).OrderByDescending(x =>x.CourseId /*x.WorkshopParticipantId*/).AsQueryable().Page(currentPage),
+        //        NonPrintUser= WorkshopParticipants.Where(x=> x.Course.CreatedBy == CurrentUser.UserId && x.IsPrinted!=true).Count(),
+        //        TotalUser= WorkshopParticipants.Count(),
+        //        PrintUser= WorkshopParticipants.Where(x => x.Course.CreatedBy == CurrentUser.UserId && x.IsPrinted == true).Count()
+        //    };
 
-            return PartialView("_WorkshopParticipantList", res);
-        }
+        //    return PartialView("_WorkshopParticipantList", res);
+        //}
 
         [AllowAnonymous]
         public ActionResult EditUserInfo(Guid Id)

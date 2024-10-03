@@ -2,15 +2,15 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Azure.Core;
+
 using Certification.Domain.Entities;
-using Certification.Infrastructure.Data;
+
 
 using Microsoft.AspNetCore.Identity;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-
+using Certification.Infrastructure.Data;
 
 namespace CertificationWeb.CustomAuthentication
 {

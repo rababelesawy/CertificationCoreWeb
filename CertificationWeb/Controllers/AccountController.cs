@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -326,7 +326,7 @@ namespace CertificationWebeWeb.Controllers
 
         //public ActionResult ChangePhoto()
         //{
-        //    var user = db.Users.Find(CurrentUser.UserId);
+        //    var user = _db.Users.Find(CurrentUser.UserId);
 
         //    return PartialView("_ChangePhoto", new ChangeImageView() { Id = user.UserId, ImageId = user.ImageId });
         //}
@@ -334,10 +334,23 @@ namespace CertificationWebeWeb.Controllers
         //[HttpPost]
         //public ActionResult ChangePhoto(ChangeImageView model)
         //{
-        //    var user = db.Users.Find(model.Id);
+        //    var user = _db.Users.Find(model.Id);
+
+        //    if (user == null)
+        //    {
+        //        return NotFound(); // Return 404 if the user is not found
+        //    }
+
+        //    // Update the user's ImageId
         //    user.ImageId = model.ImageId;
-        //    db.Entry(user).State = System.Data.Entity.EntityState.Modified;
-        //    db.SaveChanges();
+
+        //    // Mark the user entity as modified
+        //    _db.Entry(user).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+
+        //    // Save changes to the database
+        //    _db.SaveChanges();
+
+        //    // Return a JSON response indicating success
         //    return Json("1");
         //}
     }

@@ -1,0 +1,16 @@
+﻿@model Certification.Domain.Entities.User
+
+@*<div>
+    <img class="img-50 rounded-circle" id="ProfileImg" src="~/Content/assets/images/user/1.jpg" alt="#">
+    <img class="img-50 rounded-circle" id="ProfileImg" src="@(Model.Image!=null?Model.Image:"/Content/assets/images/user/1.jpg")" alt="#">
+</div>
+<h6 class="mt-3 f-12">@Model.UserName </h6>*@
+
+
+<div class="header-user-profile">
+    <div class="header-user">
+        <img src="@(Model.ImageId!=0?"~/Attachments/"+Model.ImageId.ToString()+".jpg":"~/Content/assets/images/user/user.png")" alt="Admin Template" />
+    </div>
+    <h5>@Model.UserName</h5>
+    <p>Admin</p>
+</div>

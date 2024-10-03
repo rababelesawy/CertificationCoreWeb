@@ -1,10 +1,13 @@
 ﻿using Certification.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Certification.Infrastructure.Config;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-namespace Certification.Infrastructure.Data
-{
-    public class Context : DbContext
+
+
+namespace Certification.Infrastructure.Data;
+    public class Context : IdentityDbContext<User>
+
     {
         public Context(DbContextOptions<Context> options) : base(options) { }
 
@@ -16,9 +19,9 @@ namespace Certification.Infrastructure.Data
         }
 
         // DbSets for your entities
-        public DbSet<Course> Courses { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<WorkshopParticipant> WorkshopParticipants { get; set; }
-        public DbSet<FileAttachment> FileAttachment { get; set; }
+        public virtual DbSet<Course> Courses { get; set; }
+        public virtual DbSet<User> Users { get; set; }  
+        public virtual DbSet<WorkshopParticipant> WorkshopParticipants { get; set; }
+        public virtual DbSet<FileAttachment> FileAttachment { get; set; }
     }
-}
+

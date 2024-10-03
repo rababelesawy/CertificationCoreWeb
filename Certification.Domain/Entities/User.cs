@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
+﻿
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Certification.Domain.Entities
 {
-    public class User
+    public class User:IdentityUser
     {
         public User()
         {
@@ -19,9 +20,9 @@ namespace Certification.Domain.Entities
         public string NameAr { get; set; }
 
         public int ImageId { get; set; }
-        public string UserName { get; set; }
+ 
         public string Password { get; set; }
-        public string Email { get; set; }
+   
 
         public string Address { get; set; }
 

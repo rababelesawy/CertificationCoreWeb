@@ -1,0 +1,390 @@
+﻿@using FormMethod = Microsoft.AspNetCore.Mvc.Rendering.FormMethod
+@model Certification.Domain.Entities.WorkshopParticipant
+
+
+@{
+    Layout = null;
+    ViewBag.Title = " بيانات المتدرب";
+}
+
+
+    <link rel="icon" href="~/Content/assets/images/logo.jpg">
+    @*<link rel="icon" href="~/Content/assets/images/logo3.png" type="image/x-icon" />
+        <link rel="shortcut icon" href="~/Content/assets/images/logo3.png" type="image/x-icon" />*@
+
+    <title>@ViewBag.Title</title>
+
+    <!--Google font-->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,500,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Cairo&display=swap" rel="stylesheet">
+
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/css/fontawesome.css">
+
+    <!-- ico-font -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/css/icofont.css">
+
+    <!-- Themify icon -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/css/themify.css">
+
+    <!-- Flag icon -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/css/flag-icon.css">
+
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/css/bootstrap.css">
+
+    <!-- App css -->
+    @*<link rel="stylesheet" type="text/css" href="~/Content/assets/css/style.css">*@
+
+    <!-- Responsive css -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/css/responsive.css">
+    <!-- DatePicker css -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/css/date-picker.css">
+
+    @*<link href="~/Content/assets/css/custom.css" rel="stylesheet" />*@
+
+
+
+    <style>
+        html * {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .input-validation-error {
+            border: 1px dashed red !important;
+        }
+    </style>
+
+ 
+
+    <link rel="stylesheet" type="text/css" href="~/Content/new_main.css">
+    <!-- Icomoon Font Icons css -->
+    <link rel="stylesheet" href="~/Content/fonts/style.css">
+
+
+
+    <!-- Loader ends -->
+    <div class="page-wrapper rtl">
+
+        <!--Page Header Start-->
+        @*@Html.Partial("_MainHeader")*@
+        @*@Html.Action("MainHeader", "Home")*@
+        <!--Page Header Ends-->
+
+        <div class="page-body-wrapper">
+            <!-- Sidebar Start -->
+           
+            <!-- Sidebar End -->
+
+
+            <div class="page-body" style="margin-top:75px;">
+
+                <div class="container-fluid">
+                    <div class="main-container">
+
+                        <div class="page-header">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")"><i class="fa fa-home"></i> بيانات المتدرب  </a> </li>
+                                <li class="breadcrumb-item active">بيانات المتدرب</li>
+                            </ol>
+
+                        </div>
+                    </div>
+                    <div class="content-wrapper">
+                        <div class="container-fluid">
+                            <div class="row gutters">
+
+                                <div class="col-sm-12">
+                                    <div class="card">
+
+                                        <div class="card-header custom-padding header-color">
+
+                                            <div class="row">
+                                                <div class="col-md-9">
+                                                    <h5 class="margin-0" style="margin-top:10px;">
+                                                        <i class="fa fa-table"></i> بيانات المتدرب
+                                                    </h5>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="card-body">
+
+
+                                            @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "frmUserInfo" }))
+                                            {
+                                                @Html.AntiForgeryToken()
+
+                                                @*@Html.HiddenFor(x => x.GuidId)*@
+                                                @Html.HiddenFor(x => x.IsPrinted)
+                                                @*@Html.HiddenFor(x => x.AddedDate)*@
+                                                @Html.HiddenFor(x => x.WorkshopParticipantId)
+                                                @Html.HiddenFor(x => x.Phone)
+                                                @Html.HiddenFor(x => x.Email)
+
+                                                <div class="row">
+                                                    <div class="form-group col-md-3">
+                                                        <label class="label-name"> الأسم المعتمد فى الشهادة </label>
+                                                        <div class="input-group">
+                                                            @Html.TextBoxFor(c => c.Name, new { @class = "form-control", @required = "required" })
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    <div class="form-group col-md-3">
+                                                        <label class="label-name"> الجوال</label>
+                                                        @Html.TextBoxFor(c => c.Phone, new { @class = "form-control", @required = "required" ,@disabled= "disabled" })
+                                                    </div>
+
+
+                                                    <div class="form-group col-md-3">
+                                                        <label class="label-name">البريد الالكترونى </label>
+                                                        <div class="input-group">
+                                                            @Html.TextBoxFor(c => c.Email, new { @class = "form-control", @type = "email", @required = "@required", @disabled = "disabled" })
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <div class="card-footer">
+                                                    <div align="center">
+                                                        <a href="#" class="btn btn-save" onclick="SaveData()" id="savebutton"><i class="fa fa-save"></i> حفظ </a>
+                                                        <a href="@Url.Action("PrintCertification", "Home",new { id=Model.WorkshopParticipantId})" class="btn btn-cancel" style="margin-right:5px;" @*onclick="GetCertification(@Model.WorkshopParticipantId)"*@><i class="fa fa-newspaper-o"></i>  الشهادة</a>
+
+                                                    </div>
+
+
+                                                </div>
+
+                                            }
+
+
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="~/Content/assets/js/jquery-3.2.1.min.js"></script>
+    <script src="~/Content/assets/js/jquery.ui.min.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+        <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+        <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+
+
+
+    <!-- Bootstrap js-->
+    <script src="~/Content/assets/js/bootstrap/popper.min.js"></script>
+    <script src="~/Content/assets/js/bootstrap/bootstrap.js"></script>
+
+    <!-- Sidebar jquery-->
+    <script src="~/Content/assets/js/sidebar-menu.js"></script>
+
+
+
+    <!-- Theme js-->
+    <script src="~/Content/assets/js/script.js"></script>
+    @*<script src="~/Content/assets/js/chat-sidebar/chat.js"></script>*@
+
+
+    <!--Datepicker js-->
+    <script src="~/Content/assets/js/date-picker/datepicker.js"></script>
+    <script src="~/Content/assets/js/date-picker/datepicker.en.js"></script>
+    <script src="~/Content/assets/js/date-picker/datepicker.ar.js"></script>
+    <script src="~/Content/assets/js/date-picker/datepicker.custom.js"></script>
+
+
+
+
+
+    <!-- validation scripts -->
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+
+
+    <!-- bootstrap notify js -->
+    <script src="~/Content/assets/js/notify/bootstrap-notify.min.js"></script>
+    <script src="~/Content/assets/js/notify/notify-script.js"></script>
+
+
+    <script>
+        function isNumber(evt) {
+            debugger;
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        }
+        function alertt(message, state) {
+            $.notify({
+                message: message,
+            },
+                {
+                    type: state,
+                    allow_dismiss: false,
+                    newest_on_top: false,
+                    mouse_over: false,
+                    showProgressbar: false,
+                    spacing: 10,
+                    timer: 2000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    },
+                    offset: {
+                        x: 30,
+                        y: 30
+                    },
+                    delay: 1000,
+                    z_index: 10000,
+                    animate: {
+                        enter: 'animated bounce',
+                        exit: 'animated bounce'
+                    }
+                });
+        }
+        function loadimageinput(FolderName, Code) {
+            debugger;
+            var ImageFormat = ["jpg", "JPG", "png", "PNG", "gif", "GIF ", "jpeg", "JPEG", "tif", "TIF", "jfif", "JFIF"];
+            var formdata = new FormData();
+            var fileInput = Code != "-1" ? document.getElementById('loadimageinput') : document.getElementById('loadimageinput1');
+            if (fileInput.files.length > 0) {
+
+                for (i = 0; i < fileInput.files.length; i++) {
+                    formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                    if (!ImageFormat.includes(String(fileInput.files[i].name).split('.')[1])) {
+                        alertt("الصوره غير صحيح (jpg,JPG,png,PNG,gif,GIF,jpeg,JPEG,tif,TIF,jfif,JFIF)", "danger");
+                        Code != "-1" ? $("#loadimageinput").val('') : $("#loadimageinput1").val('');
+                        return false;
+                    }
+                }
+
+
+                var desc = "qqq";
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', "@Url.Action("UploadFile", "Base")" + `?type=${FolderName}` + `&code=${Code}`);  //set foldername
+
+                xhr.send(formdata);
+                xhr.onreadystatechange = function (ress) {
+
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var res = JSON.parse(ress.currentTarget.responseText);
+                        debugger;
+                        if (Code == -1) {
+                            $("#imagename1").val(res[0].path);
+                        }
+                        else
+                            $("#imagename").val(res[0].path);
+                        //$("#imagediv img").remove();
+                        //var img = $('<img id="uploadimage" class="img-70 rounded-circle">');
+                        //img.attr('src', res[0].path);
+                        //img.appendTo('#imagediv');
+
+
+                    }
+                }
+            } else {
+                console.log("no files");
+            }
+        }
+         function loadattachmentinput(FolderName, Code) {
+            debugger;
+            var FileFormat = ["pdf", "PDF"];
+            var formdata = new FormData();
+            var fileInput = document.getElementById('loadattachmentinput');
+            if (fileInput.files.length > 0) {
+
+                for (i = 0; i < fileInput.files.length; i++) {
+                    formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                    if (!FileFormat.includes( String(fileInput.files[i].name).split('.')[1]) ) {
+                        alertt("المرفق غير صحيح (pdf,PDF)", "danger");
+                        $("#loadattachmentinput").val('');
+                        return false;
+                    }
+                }
+
+
+                var desc = "qqq";
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', "@Url.Action("UploadFile", "Base")" + `?type=${FolderName}` + `&code=${Code}`);  //set foldername
+
+                xhr.send(formdata);
+                xhr.onreadystatechange = function (ress) {
+
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var res = JSON.parse(ress.currentTarget.responseText);
+                        debugger;
+                        $("#attachmentname").val(res[0].path);
+
+
+                    }
+                }
+            } else {
+                console.log("no files");
+            }
+        }
+    </script>
+
+    <script>
+
+        function showHideDiv(divId, show) {
+            const div = document.querySelector('#' + divId);
+            if (show) {
+                div.style = 'display: visible';
+            } else {
+                div.style = 'display: none';
+            }
+        }
+
+
+        function SaveData() {
+
+            if ($("#frmUserInfo").valid()) {
+                debugger
+                $("#savebutton").attr("disabled", true);
+                $.post("@Url.Action("UserInfo", "Home")", $("#frmUserInfo").serialize(), function (res) {
+                    if (res == "1") {
+                             alertt("تم الحفظ بنجاح", "success");
+                    }
+                });
+            }
+        }
+
+
+
+        function GetCertification(id) {
+            window.location = "/Home/GetCertification?id=" + id;
+            $.get("@Url.Action("GetCertification", "Home")", { id: id }, function (res) {
+
+
+            });
+        }
+
+
+
+    </script>
+
+
+

@@ -8,12 +8,13 @@
 
   <ItemGroup>
     <Folder Include="Interfaces\" />
+    <Folder Include="Identity\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ifa" Version="1.0.4" />
-    <PackageReference Include="Microsoft.AspNet.Identity.EntityFramework" Version="2.2.4" />
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
     <PackageReference Include="X.PagedList" Version="10.2.1" />
   </ItemGroup>
 

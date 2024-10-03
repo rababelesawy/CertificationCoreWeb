@@ -12,7 +12,7 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace CertificationWeb.Controllers
 {
-    [Authorize]
+    //[Authorize]
     // [CustomAuthorize]
     public class BaseController : Controller
     {
@@ -31,9 +31,11 @@ namespace CertificationWeb.Controllers
             _dB = DB;
         }
 
-
+ 
         public CustomPrincipal CurrentUser
         {
+
+            #region 
             get
             {
                 var user = _httpContextAccessor.HttpContext?.User;
@@ -44,6 +46,10 @@ namespace CertificationWeb.Controllers
                 }
                 return null;
             }
+
+            #endregion
+
+
 
         }
 

@@ -12,7 +12,9 @@ namespace Certification.Domain.DomainModels
         public int PrintUser { get; set; }
         public int NonPrintUser { get; set; }
         public WorkshopParticipantSearchModel WorkshopParticipantSearchModel { get; set; }
-        public Ifa.Model.PagedResultViewModel<WorkshopParticipant> WorkshopParticipants { get; set; }
+        public PagedResultViewModel<WorkshopParticipant> WorkshopParticipants { get; set; }
+
+    
     }
 
 

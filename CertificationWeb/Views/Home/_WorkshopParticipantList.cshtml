@@ -1,4 +1,6 @@
-﻿@using X.PagedList;
+﻿
+
+@using X.PagedList;
 @using X.PagedList.Mvc.Core;
 @using X.PagedList.Web.Common;
 @model Certification.Domain.DomainModels.WorkshopParticipantModel
@@ -109,7 +111,7 @@
             </tr>
         }
 
-        </tfoot>
+    </tfoot>
 </table>
 
 
@@ -118,31 +120,31 @@
     <div class="row gutters">
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
             <div class="mr-p">
-                @*
+@* 
                 <nav aria-label="Page navigation example">
-                @if (ViewBag.type == 1)
-                {
-                @Html.PagedListPager(Model.WorkshopParticipants, (itemsPerPage, currentPage) => Url.Action("WorkshopParticipants", new { itemsPerPage, currentPage, theme = (string)ViewBag.Theme }), new AjaxOptions { OnSuccess = "UpdateProductsTable", LoadingElementId = "loading" }, ifaTheme: (string)ViewBag.Theme)
+                    @if (ViewBag.type == 1)
+                    {
+                        @Html.PagedListPager(Model.WorkshopParticipants, (itemsPerPage, currentPage) => Url.Action("WorkshopParticipants", new { itemsPerPage, currentPage, theme = (string)ViewBag.Theme }), new AjaxOptions { OnSuccess = "UpdateProductsTable", LoadingElementId = "loading" }, ifaTheme: (string)ViewBag.Theme)
 
-                }
-                else
-                {
+                    }
+                    else
+                    {
 
 
-                @Html.PagedListPager(Model.WorkshopParticipants, (itemsPerPage, currentPage) => Url.Action("WorkshopParticipantSearch", new
-                {
-                Model.WorkshopParticipantSearchModel.Name,
-                Model.WorkshopParticipantSearchModel.Phone,
-                Model.WorkshopParticipantSearchModel.CourseId,
-                Model.WorkshopParticipantSearchModel.IsPrinted,
-                Model.WorkshopParticipantSearchModel.IsSended,
-                Model.WorkshopParticipantSearchModel.CoachName,
-                itemsPerPage,
-                currentPage,
-                theme = (string)ViewBag.Theme
-                }),
-                new AjaxOptions { OnSuccess = "UpdateProductsTable", LoadingElementId = "loading", HttpMethod = "Post" }/* , ifaTheme: (string)ViewBag.Theme */)
-                }
+                        @Html.PagedListPager(Model.WorkshopParticipants, (itemsPerPage, currentPage) => Url.Action("WorkshopParticipantSearch", new
+                   {
+                       Model.WorkshopParticipantSearchModel.Name,
+                       Model.WorkshopParticipantSearchModel.Phone,
+                       Model.WorkshopParticipantSearchModel.CourseId,
+                       Model.WorkshopParticipantSearchModel.IsPrinted,
+                       Model.WorkshopParticipantSearchModel.IsSended,
+                       Model.WorkshopParticipantSearchModel.CoachName,
+                       itemsPerPage,
+                       currentPage,
+                       theme = (string)ViewBag.Theme
+                   }),
+                           new AjaxOptions { OnSuccess = "UpdateProductsTable", LoadingElementId = "loading", HttpMethod = "Post" }/* , ifaTheme: (string)ViewBag.Theme */)
+                    }
                 </nav> *@
 
             </div>
@@ -166,32 +168,32 @@
 
 <script>
     function ActiveCertification(WorkshopParticipantId, IsEmailSended) {
-
+ 
         $('#a_' + WorkshopParticipantId).prop('onclick', null);
-
-        if (IsEmailSended == "true") {
+      
+        if (IsEmailSended=="true") {
             alertt("تم ارسال بريد الكترونى من قبل  ", "danger");
         } else {
             debugger;
             $.get("@Url.Action("ActiveCertification", "WorkshopParticipant")", { WorkshopParticipantId: WorkshopParticipantId }, function (res) {
                 if (res == "1") {
                     $("#tr_" + WorkshopParticipantId).addClass("found-data");
-                    alertt("تم اعتماد جميع الشهادات ");
+                     alertt("تم اعتماد جميع الشهادات ");
 
-                } else if (res == "-1") {
-                    alertt("حدث خطأ اثناء ارسال الايميلات ", "danger");
-                }
+                 } else if (res == "-1") {
+                     alertt("حدث خطأ اثناء ارسال الايميلات ","danger");
+                 }
             });
         }
 
 
     }
-
+    
 
 
     // function SendWhatsApp() {
     //      $('#a_' + WorkshopParticipantId).prop('onclick', null);
-
+      
     //     if (IsEmailSended=="true") {
     //         alertt("تم ارسال بريد الكترونى من قبل  ", "danger");
     //     } else {
@@ -240,4 +242,4 @@
     }
 
 
-</script>
+    </script>
