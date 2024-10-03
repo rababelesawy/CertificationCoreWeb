@@ -9,7 +9,7 @@ namespace CertificationWeb.CustomAuthentication
     {
         #region Identity Properties
 
-        public int UserId { get; private set; }
+        public string UserId { get; private set; }
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
         public string UserName { get; private set; }
@@ -31,7 +31,7 @@ namespace CertificationWeb.CustomAuthentication
                 throw new ArgumentNullException(nameof(claimsPrincipal));
             }
 
-            UserId = Convert.ToInt32(claimsPrincipal.FindFirst("UserId")?.Value);
+            UserId = claimsPrincipal.FindFirst("UserId")?.Value;
             FirstName = claimsPrincipal.FindFirst(ClaimTypes.GivenName)?.Value;
             LastName = claimsPrincipal.FindFirst(ClaimTypes.Surname)?.Value;
             UserName = claimsPrincipal.Identity.Name;

@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -12,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using Certification.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using CertificationWeb.Controllers;
@@ -25,12 +25,12 @@ namespace CertificationWebeWeb.Controllers
     public class AccountController : BaseController
     {
         private readonly Context _db;
-        private readonly UserManager<CustomMembershipUser> _userManager;
-        private readonly SignInManager<CustomMembershipUser> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AccountController(Context Db, UserManager<CustomMembershipUser> userManager,
-            SignInManager<CustomMembershipUser> signInManager, RoleManager<IdentityRole> roleManager) : base(Db)
+        public AccountController(Context Db, UserManager<User> userManager,
+            SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager) : base(Db)
         {
             _db = Db;
             _userManager = userManager;
@@ -51,35 +51,44 @@ namespace CertificationWebeWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByNameAsync(model.UserName);
-                if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+                try
                 {
-                    var claims = new List<Claim>
+                    var user = await _userManager.FindByNameAsync(model.UserName);
+                    if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
                     {
-                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                        new Claim(ClaimTypes.Name, user.UserName),
-                        new Claim(ClaimTypes.Email, user.Email)
-                    };
+                        var claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                            new Claim(ClaimTypes.Name, user.UserName),
+                            new Claim(ClaimTypes.Email, user.Email)
+                        };
 
-                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    var principal = new ClaimsPrincipal(identity);
+                        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        var principal = new ClaimsPrincipal(identity);
 
-                    var authProperties = new AuthenticationProperties
+                        var authProperties = new AuthenticationProperties
+                        {
+                            IsPersistent = false,
+                            ExpiresUtc = DateTimeOffset.UtcNow.AddYears(1)
+                        };
+
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal,
+                            authProperties);
+                        return new JsonResult("1");
+                    }
+                    else
                     {
-                        IsPersistent = false,
-                        ExpiresUtc = DateTimeOffset.UtcNow.AddYears(1)
-                    };
-
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal,
-                        authProperties);
-                    return new JsonResult("1");
+                        return new JsonResult("-1");
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    return new JsonResult("-1");
+                    Console.WriteLine(e);
+                    throw;
                 }
             }
 
+            var errors = ModelState.SelectMany(x => x.Value.Errors).Select(x => x.ErrorMessage).ToList();
             return new JsonResult("-1");
         }
 
@@ -129,7 +138,7 @@ namespace CertificationWebeWeb.Controllers
             return PartialView("_ResetPassword", new ResetPasswordView
             {
                 Email = user.Email,
-                Id = user.UserId, // Ensure this is the correct property from your User class
+                Id = user.Id, // Ensure this is the correct property from your User class
                 UserName = user.UserName
             });
         }
@@ -160,8 +169,8 @@ namespace CertificationWebeWeb.Controllers
             // Serialize user data for claims
             var userModel = new CustomSerializeModel
             {
-                UserId = user.UserId,
-                Name = user.FullName,
+                UserId = user.Id,
+                Name = user.UserName,
                 UserName = user.Email
             };
 

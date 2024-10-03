@@ -1,33 +1,23 @@
-﻿
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Azure.Core;
-using Certification.Domain.Entities;
+﻿using Certification.Domain.Entities;
 using Certification.Infrastructure.Data;
-
 using Microsoft.AspNetCore.Identity;
-
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-
 
 namespace CertificationWeb.CustomAuthentication
 {
-   
+    public class CustomMembership : IdentityUser
+    {
+        private readonly UserManager<CustomMembershipUser> _userManager;
+        private readonly SignInManager<CustomMembershipUser> _signInManager;
+        private readonly Context _db;
 
-        public class CustomMembership:IdentityUser
+        public CustomMembership(UserManager<CustomMembershipUser> userManager,
+            SignInManager<CustomMembershipUser> signInManager, Context db)
         {
-            private readonly UserManager<CustomMembershipUser> _userManager;
-            private readonly SignInManager<CustomMembershipUser> _signInManager;
-            private readonly Context _db;
-
-            public CustomMembership(UserManager<CustomMembershipUser> userManager, SignInManager<CustomMembershipUser> signInManager, Context db)
-            {
-                _userManager = userManager;
-                _signInManager = signInManager;
-                _db = db;
-            }
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _db = db;
+        }
 
         public async Task<bool> ValidateUserAsync(string username, string password)
         {
@@ -38,11 +28,9 @@ namespace CertificationWeb.CustomAuthentication
                 return false;
             }
 
-           
+
             return await _userManager.CheckPasswordAsync(user, password);
         }
-
-
 
 
         public async Task<IdentityResult> CreateUserAsync(User user, string password)
@@ -52,34 +40,28 @@ namespace CertificationWeb.CustomAuthentication
         }
 
 
-
         public async Task<CustomMembershipUser> GetUserAsync(string username, bool userIsOnline)
         {
-            
             var user = await _userManager.FindByNameAsync(username);
 
-         
+
             if (user == null || user.IsDeleted == true)
             {
-                return null; 
+                return null;
             }
 
-           
-            return user; 
+
+            return user;
         }
-
-
-
 
 
         public async Task<string> GetUserNameByEmailAsync(string email)
         {
-           
             var user = await _userManager.Users
                 .FirstOrDefaultAsync(x => x.Email == email && x.IsDeleted != true);
 
-           
-            return user != null ? user.FullName : string.Empty; 
+
+            return user != null ? user.FullName : string.Empty;
         }
 
 
@@ -99,7 +81,8 @@ namespace CertificationWeb.CustomAuthentication
 
         public int PasswordAttemptWindow => 10; // The time frame for counting invalid attempts
 
-        public string PasswordStrengthRegularExpression => "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+]).{8,}$"; // Example regex for strong password
+        public string PasswordStrengthRegularExpression =>
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+]).{8,}$"; // Example regex for strong password
 
         public bool RequiresQuestionAndAnswer => false; // Typically false in modern applications
 
@@ -184,7 +167,6 @@ namespace CertificationWeb.CustomAuthentication
             await _userManager.UpdateAsync(user);
         }
 
-#endregion
+        #endregion
     }
 }
-

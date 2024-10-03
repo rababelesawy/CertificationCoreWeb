@@ -1,4 +1,5 @@
 using System.Globalization;
+using Certification.Domain.Entities;
 using Certification.Infrastructure.Data;
 using CertificationWeb.CustomAuthentication;
 using Microsoft.AspNetCore.Identity;
@@ -19,7 +20,7 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddDbContext<Context>(options =>
     {
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-    }).AddIdentity<CustomMembershipUser, IdentityRole>(options => { })
+    }).AddIdentity<User, IdentityRole>(options => { })
     .AddEntityFrameworkStores<Context>()
     .AddDefaultTokenProviders();
 var app = builder.Build();

@@ -37,7 +37,7 @@ namespace Certification.Domain.Entities
         public DateTime CourseDate { get; set; }
 
         [ForeignKey("User")]
-        public int? CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
 
         public virtual User User { get; set; }
         public ICollection<WorkshopParticipant> WorkshopParticipants { get; set; }

@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,23 +12,16 @@ namespace Certification.Domain.Entities
     {
         public User()
         {
-
         }
-        public int UserId { get; set; }
-
         public string NameAr { get; set; }
 
         public int ImageId { get; set; }
- 
-        public string Password { get; set; }
-   
 
         public string Address { get; set; }
 
         public string Phone { get; set; }
 
         public bool? IsActive { get; set; }
-        public bool? IsEmailVerified { get; set; }
         public bool? IsDeleted { get; set; }
 
         public DateTime CreatedDate { get; set; }

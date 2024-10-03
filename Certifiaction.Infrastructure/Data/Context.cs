@@ -1,4 +1,5 @@
-﻿using Certification.Domain.Entities;
+﻿using System.Reflection;
+using Certification.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Certification.Infrastructure.Config;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -9,13 +10,17 @@ namespace Certification.Infrastructure.Data;
     public class Context : IdentityDbContext<User>
 
     {
+        public Context()
+        {
+            
+        }
         public Context(DbContextOptions<Context> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new FileAttachmentConfig());
-          
-            // modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            base.OnModelCreating(modelBuilder);
         }
 
         // DbSets for your entities

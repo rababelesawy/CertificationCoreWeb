@@ -17,7 +17,7 @@ namespace Certification.Domain.DomainModels
         [StringLength(100, MinimumLength = 6, ErrorMessage = "علي الاقل 6 احرف او ارقام")]
         public string Password { get; set; }
 
-        public string Token { get; set; }
+        public string? Token { get; set; }
         public bool RememberMe { get; set; }
 
 
@@ -25,7 +25,7 @@ namespace Certification.Domain.DomainModels
 
     public class CustomSerializeModel
     {
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public string Name { get; set; }
         //public int TypeId { get; set; }
         public string UserName { get; set; }
@@ -147,7 +147,7 @@ namespace Certification.Domain.DomainModels
 
     public class ResetPasswordView
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string UserName { get; set; }
 
         [Required(ErrorMessage = " ")]

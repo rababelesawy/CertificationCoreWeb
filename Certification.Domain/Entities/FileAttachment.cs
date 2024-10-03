@@ -11,7 +11,7 @@ namespace Certification.Domain.Entities
         public int FileAttachmentId { get; set; }
         public int? TypeId { get; set; }
         public string Title { get; set; }
-        public int? CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreationDate { get; set; }
         public bool? IsDeleted { get; set; }
     }

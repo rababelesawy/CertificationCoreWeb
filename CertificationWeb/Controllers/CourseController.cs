@@ -1,12 +1,9 @@
 ﻿using Certification.Domain.Entities;
 using Certification.Infrastructure.Data;
-
 using X.PagedList;
-
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -14,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Hangfire;
-
 using Certification.Domain.DomainModels;
 using ActionResult = Microsoft.AspNetCore.Mvc.ActionResult;
 using CertificationWeb.Controllers;
@@ -23,66 +19,61 @@ namespace CertificationCoreWeb.Controllers
 {
     [Authorize]
     public class CourseController : BaseController
-    { 
+    {
         private readonly Context _dB;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public CourseController(Context DB , IWebHostEnvironment webHostEnvironment) :base(DB)
+        public CourseController(Context DB, IWebHostEnvironment webHostEnvironment) : base(DB)
         {
             _dB = DB;
-           _webHostEnvironment = webHostEnvironment;
+            _webHostEnvironment = webHostEnvironment;
         }
 
-        
-  
-
-        
 
         // GET: Course
         public ActionResult Index()
         {
             return View();
         }
- // Ensure this is included at the top of your file
+        // Ensure this is included at the top of your file
 
-    public ActionResult CourseList(int itemsPerPage = 10, int currentPage = 1)
-    {
-        ViewBag.Theme = "custom";
-        ViewBag.Type = 1;
-        ViewBag.Index = itemsPerPage * (currentPage - 1) + 1;
-
-        // Fetch courses created by the current user and paginate
-        var coursesQuery = _dB.Courses
-            .Where(x => x.CreatedBy == CurrentUser.UserId)
-            .OrderByDescending(x => x.CourseId);
-
-        // Get the total count for pagination
-        var totalItemCount = coursesQuery.Count();
-
-        // Get the paginated result
-        var courses = coursesQuery
-            .ToPagedList(currentPage, itemsPerPage); // Convert to IPagedList
-
-        // Create a model to hold the paginated data
-        var model = new PagedResultViewModel<Certification.Domain.Entities.Course>
+        public ActionResult CourseList(int itemsPerPage = 10, int currentPage = 1)
         {
-            Items = courses, // Items to be passed to the view
-            ItemsPerPage = itemsPerPage,
-            TotalCount = totalItemCount // Total count for pagination
-        };
+            ViewBag.Theme = "custom";
+            ViewBag.Type = 1;
+            ViewBag.Index = itemsPerPage * (currentPage - 1) + 1;
 
-        return PartialView("_CourseList", model);
-    }
+            // Fetch courses created by the current user and paginate
+            var coursesQuery = _dB.Courses
+                .Where(x => x.CreatedBy == CurrentUser.UserId)
+                .OrderByDescending(x => x.CourseId);
+
+            // Get the total count for pagination
+            var totalItemCount = coursesQuery.Count();
+
+            // Get the paginated result
+            var courses = coursesQuery
+                .ToPagedList(currentPage, itemsPerPage); // Convert to IPagedList
+
+            // Create a model to hold the paginated data
+            var model = new PagedResultViewModel<Certification.Domain.Entities.Course>
+            {
+                Items = courses, // Items to be passed to the view
+                ItemsPerPage = itemsPerPage,
+                TotalCount = totalItemCount // Total count for pagination
+            };
+
+            return PartialView("_CourseList", model);
+        }
 
 
-
-    public IActionResult AddCourse(int id = 0)
+        public IActionResult AddCourse(int id = 0)
         {
             Course model = new Course
             {
                 CertificationImage = 0,
                 CertificationName = "قم بتحريك النص لتعديل وضعه بالشهادة",
-                CreatedBy = CurrentUser.UserId 
+                CreatedBy = CurrentUser.UserId
             };
 
             if (id != 0)
@@ -92,7 +83,6 @@ namespace CertificationCoreWeb.Controllers
 
             return View(model);
         }
-
 
 
         [HttpPost]
@@ -119,9 +109,6 @@ namespace CertificationCoreWeb.Controllers
         }
 
 
-
-
-
         public IActionResult ActiveCertifications(int CourseId)
         {
             var course = _dB.Courses.Find(CourseId); // Assuming _db is injected
@@ -133,7 +120,8 @@ namespace CertificationCoreWeb.Controllers
             try
             {
                 // Get the path to the CertificationEmail.html template
-                var serverVal = Path.Combine(_webHostEnvironment.WebRootPath, "Views", "Shared", "CertificationEmail.html");
+                var serverVal = Path.Combine(_webHostEnvironment.WebRootPath, "Views", "Shared",
+                    "CertificationEmail.html");
 
                 // Queue the email sending process using Hangfire
                 BackgroundJob.Enqueue(() => SendEmail(
@@ -152,8 +140,5 @@ namespace CertificationCoreWeb.Controllers
 
             return Json("1"); // Return success response
         }
-
-
-
     }
 }

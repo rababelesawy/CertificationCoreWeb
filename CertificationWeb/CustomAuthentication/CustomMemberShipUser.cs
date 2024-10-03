@@ -1,10 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Identity;
 using Certification.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 
 
 namespace CertificationWeb.CustomAuthentication
@@ -13,10 +9,8 @@ namespace CertificationWeb.CustomAuthentication
     {
         #region User Properties
 
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public string FullName { get; set; }
-
-
 
         public bool? IsActive { get; set; }
         public bool? IsEmailVerified { get; set; }
@@ -26,14 +20,14 @@ namespace CertificationWeb.CustomAuthentication
 
         public CustomMembershipUser(User user)
         {
-            UserId = user.UserId;
+            UserId = user.Id;
             FullName = user.NameAr;
             UserName = user.NameAr;
             Email = user.Email;
 
             IsActive = user.IsActive;
             IsDeleted = user.IsDeleted;
-            IsEmailVerified = user.IsEmailVerified;
+            IsEmailVerified = user.EmailConfirmed;
 
         }
     }
