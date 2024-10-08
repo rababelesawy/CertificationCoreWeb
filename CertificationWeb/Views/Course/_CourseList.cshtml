@@ -28,7 +28,7 @@
 
                     <td>@item.CourseName</td>
                     <td>@item.CoachName</td>
-                    <td><img src="@string.Concat("~/Attachments/",item.CertificationImage,".jpg")" width="100" height="80" /></td>
+                    <td><img src="@string.Concat("/Attachments/",item.CertificationImage)" width="100" height="80" /></td>
                     <td>@Convert.ToDateTime(item.CourseDate).ToString("dd/MM/yyyy")</td>
                     <td>@Convert.ToDateTime(item.CreationDate).ToString("dd/MM/yyyy")</td>
 
@@ -164,43 +164,45 @@
 
 </script> *@
 
-
-
 <script>
     function uploadWorkshopParticipant(CourseId) {
         debugger;
         var formdata = new FormData();
         var fileInput = document.getElementById('upload_' + CourseId);
 
-            if (fileInput.files.length > 0) {
+        if (fileInput.files.length > 0) {
             for (i = 0; i < fileInput.files.length; i++) {
-                formdata.append(fileInput.files[i].name, fileInput.files[i]);
-                }
+                formdata.append('file', fileInput.files[i]);  // Append the file
+            }
 
-                formdata.append('CourseId', CourseId);
+            formdata.append('CourseId', CourseId);  // Append the CourseId
 
             // Create an XMLHttpRequest instance
-                var xhr = new XMLHttpRequest();
+            var xhr = new XMLHttpRequest();
 
-            // Specify the action URL (this will work if inside a Razor view)
-                xhr.open('POST', '@Url.Action("Upload", "WorkshopParticipant")');
+            // The action URL should be passed properly from the server-side
+            var uploadUrl = '@Url.Action("Upload", "WorkshopParticipant")';  // URL generated on the server side
+
+            // Open the request with the URL
+            xhr.open('POST', uploadUrl);
 
             // Define the function that handles the server's response
-                xhr.onreadystatechange = function () {
+            xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) { // readyState 4 means the request is done
                     if (xhr.status === 200) { // status 200 is a successful return
                         alert("تم الحفظ بنجاح");
                     } else {
                         alert("خطأ أثناء رفع الملف. تأكد من الملفات أو حاول مرة أخرى.");
-                        }
+                    }
                 }
-                };
+            };
 
             // Send the form data (the file and CourseId)
-                xhr.send(formdata);
-            } else {
-                console.log("no files selected");
+            xhr.send(formdata);
+        } else {
+            console.log("no files selected");
             alert("لم تقم بتحديد ملف.");
-            }
         }
+    }
 </script>
+

@@ -51,39 +51,70 @@ namespace CertificationCoreWeb.Controllers
 
 
 
+        
+    
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file)
         {
-            if (file != null && file.Length > 0 && file.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            try
             {
-                using (var package = new ExcelPackage(file.OpenReadStream()))
+                // Set the EPPlus license context (this should be set before using ExcelPackage)
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+                if (file != null && file.Length > 0 && file.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
                 {
-                    var currentSheet = package.Workbook.Worksheets;
-                    var workSheet = currentSheet.First();
-                    var noOfRow = workSheet.Dimension.End.Row;
-
-                    for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
+                    using (var package = new ExcelPackage(file.OpenReadStream()))
                     {
-                        var Obj = new WorkshopParticipant();
+                        var workbook = package.Workbook;
 
-                        Obj.Name = workSheet.Cells[rowIterator, 1]?.Value?.ToString();
-                        Obj.Email = workSheet.Cells[rowIterator, 2]?.Value?.ToString();
-                        Obj.Phone = workSheet.Cells[rowIterator, 3]?.Value?.ToString();
+                        
+                        if (workbook.Worksheets.Count == 0)
+                        {
+                            return Json("-1");  
+                        }
 
-                        Obj.IsPrinted = false;
-                        Obj.IsEmailSended = false;
-                        Obj.CourseId = int.Parse(Request.Form["CourseId"]);  // Get the CourseId from a hidden field or parameter
+                        var workSheet = workbook.Worksheets.First();  
 
-                        _db.WorkshopParticipants.Add(Obj);
-                        await _db.SaveChangesAsync();
+                        // Ensure the worksheet has rows
+                        if (workSheet.Dimension == null)
+                        {
+                            return Json("-1");  
+                        }
+
+                        var noOfRow = workSheet.Dimension.End.Row;
+
+                        for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
+                        {
+                            var Obj = new WorkshopParticipant();
+
+                            Obj.Name = workSheet.Cells[rowIterator, 1]?.Value?.ToString();
+                            Obj.Email = workSheet.Cells[rowIterator, 2]?.Value?.ToString();
+                            Obj.Phone = workSheet.Cells[rowIterator, 3]?.Value?.ToString();
+
+                            Obj.IsPrinted = false;
+                            Obj.IsEmailSended = false;
+                            Obj.CourseId = int.Parse(Request.Form["CourseId"]);  // Get the CourseId from the form
+
+                            _db.WorkshopParticipants.Add(Obj);
+                            await _db.SaveChangesAsync();
+                        }
                     }
+
+                    return Json("1");  
                 }
-
-                return Json("1");  // Success
+                else
+                {
+                    return Json("-1");  
+                }
             }
-
-            return Json("-1");  // Failure
+            catch (Exception ex)
+            {
+                
+                Console.WriteLine(ex.Message);
+                return Json("-1");  
+            }
         }
+
 
         [HttpPost]
         public IActionResult ActiveCertification(Guid workshopParticipantId)

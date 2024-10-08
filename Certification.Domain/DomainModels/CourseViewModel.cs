@@ -21,7 +21,7 @@ namespace Certification.Domain.DomainModels
     public string CoachName { get; set; }
 
 
-    public string CertificationImage { get; set; }
+    public string? CertificationImage { get; set; }
 
 
 
