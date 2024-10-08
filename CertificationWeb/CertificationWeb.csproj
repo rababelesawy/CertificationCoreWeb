@@ -12,6 +12,7 @@
       <Content Remove="CustomAuthentication\CustomMemberShipUser.cs" />
       <Content Remove="CustomAuthentication\CustomPrincipal.cs" />
       <Content Remove="CustomAuthentication\CustomRole.cs" />
+      <Content Remove="CustomAuthentication\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -374,6 +375,18 @@
 
     <ItemGroup>
       <Folder Include="wwwroot\Attachments\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="CustomAuthentication\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="CustomAuthentication\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="CustomAuthentication\**" />
     </ItemGroup>
 
 </Project>

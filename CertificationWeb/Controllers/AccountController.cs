@@ -15,7 +15,6 @@ using Certification.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using CertificationWeb.Controllers;
-using CertificationWeb.CustomAuthentication;
 using Newtonsoft.Json;
 
 

@@ -1,7 +1,6 @@
 using System.Globalization;
 using Certification.Domain.Entities;
 using Certification.Infrastructure.Data;
-using CertificationWeb.CustomAuthentication;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http.Features;
