@@ -266,7 +266,7 @@ namespace CertificationCoreWeb.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return RedirectToAction("AddCourse", model);
             }
             // Handle image upload
             if (model.CertificationImageFile != null)
