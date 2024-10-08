@@ -1,4 +1,4 @@
-﻿
+﻿@model Certification.Domain.DomainModels.PagedResultViewModel<Certification.Domain.Entities.Course>
 
 @{
     ViewBag.Title = "الدورات";
@@ -13,86 +13,60 @@
         color: #fff !important;
     }
 </style>
+
 <div class="container-fluid">
     <div class="main-container">
         <div class="page-header">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")"><i class="fa fa-home"></i>  الصفحة الرئيسية  </a> </li>
-
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")"><i class="fa fa-home"></i> الصفحة الرئيسية</a></li>
             </ol>
         </div>
         <div class="content-wrapper">
-
-
             <div class="container-fluid">
-
                 <div class="row gutters">
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="table-container">
                             <div class="card-header">
-                                <h5><i class="fa fa-edit"></i> &nbsp;الدورات   </h5>
+                                <h5><i class="fa fa-edit"></i> &nbsp;الدورات</h5>
                             </div>
                             <div class="card">
-
-
-
                                 <div class="card-body">
-
-                                    <div >
-                                       <div class="row">
-                                           <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                               <div class="text-right" style="padding-bottom:25px;">
-
-                                                   <a class="btn btn-certificate" href="@Url.Action("AddCourse","Course")" >
-                                                      أضافة دورة
-                                                   </a>
-                                                   <a class="btn btn-certificate" href="@Url.Action("DownloadFile","WorkshopParticipant")" title="تحميل مثال لشكل ملف الاكسل شيت">
-                                                       <i class="fa fa-download"></i>
-                                                       &nbsp; تحميل الاكسيل شيت
-                                                   </a>
-
-                                               </div>
-                                           </div>
-                                       </div>
+                                    <div class="text-right" style="padding-bottom:25px;">
+                                        <a class="btn btn-certificate" href="@Url.Action("AddCourse", "Course")">
+                                            أضافة دورة
+                                        </a>
+                                        <a class="btn btn-certificate" href="@Url.Action("DownloadFile", "WorkshopParticipant")" title="تحميل مثال لشكل ملف الاكسل شيت">
+                                            <i class="fa fa-download"></i>
+                                            &nbsp; تحميل الاكسيل شيت
+                                        </a>
                                     </div>
-
 
                                     <div class="table-responsive">
-
-                                        <div id="divResult" class="table-responsive">
-                                            @await Html.PartialAsync("CourseList", "Course")
-
+                                        <div id="divResult">
+                                            <!-- Render the _CourseList partial view -->
+                                            @await Html.PartialAsync("_CourseList", Model)
                                         </div>
                                     </div>
-
                                 </div>
-
-
                             </div>
-
                         </div>
                     </div>
-
-
                 </div>
             </div>
-
         </div>
     </div>
-
 </div>
-
 
 
 <script>
     function ActiveCertifications(CourseId) {
-        $.post("@Url.Action("ActiveCertifications", "Course")", { CourseId:CourseId}, function (res) {
+        $.post("@Url.Action("ActiveCertifications", "Course")", { CourseId: CourseId }, function (res) {
             if (res == "1") {
                 alertt("تم اعتماد جميع الشهادات ");
             } else if (res == "-1") {
-                alertt("حدث خطأ اثناء ارسال الايميلات ","danger");
+                alertt("حدث خطأ اثناء ارسال الايميلات ", "danger");
             }
-         
+
         });
     }
 </script>

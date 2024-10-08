@@ -12,7 +12,7 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace CertificationWeb.Controllers
 {
-    //[Authorize]
+    [Authorize]
     // [CustomAuthorize]
     public class BaseController : Controller
     {

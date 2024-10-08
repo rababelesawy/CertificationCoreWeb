@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Certification.Domain.Entities
 {
@@ -23,7 +24,14 @@ namespace Certification.Domain.Entities
         [Required]
         public string CoachName { get; set; }
 
-        public int CertificationImage { get; set; }
+      
+        public string CertificationImage { get; set; }
+
+
+
+
+   
+
         public string CertificationName { get; set; }
 
 
@@ -39,7 +47,7 @@ namespace Certification.Domain.Entities
         [ForeignKey("User")]
         public string? CreatedBy { get; set; }
 
-        public virtual User User { get; set; }
+        public virtual User? User { get; set; }
         public ICollection<WorkshopParticipant> WorkshopParticipants { get; set; }
     }
 }

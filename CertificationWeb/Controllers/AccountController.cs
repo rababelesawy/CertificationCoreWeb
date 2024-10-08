@@ -39,60 +39,291 @@ namespace CertificationWebeWeb.Controllers
         }
 
 
-        [HttpGet]
-        public IActionResult Login(string ReturnUrl = "")
+
+
+        #region  Login old
+        //[HttpGet]
+        //public IActionResult Login(string ReturnUrl = "")
+        //{
+        //    ViewBag.ReturnUrl = ReturnUrl;
+        //    return View();
+        //}
+
+        //[HttpPost]
+        //public async Task<IActionResult> Login(LoginView model, string returnUrl = "")
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            var user = await _userManager.FindByNameAsync(model.UserName);
+        //            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+        //            {
+        //                var claims = new List<Claim>
+        //                {
+        //                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        //                    new Claim(ClaimTypes.Name, user.UserName),
+        //                    new Claim(ClaimTypes.Email, user.Email)
+        //                };
+
+        //                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        //                var principal = new ClaimsPrincipal(identity);
+
+        //                var authProperties = new AuthenticationProperties
+        //                {
+        //                    IsPersistent = false,
+        //                    ExpiresUtc = DateTimeOffset.UtcNow.AddYears(1)
+        //                };
+
+        //                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal,
+        //                    authProperties);
+        //                return new JsonResult("1");
+        //            }
+        //            else
+        //            {
+        //                return new JsonResult("-1");
+        //            }
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            Console.WriteLine(e);
+        //            throw;
+        //        }
+        //    }
+
+        //    var errors = ModelState.SelectMany(x => x.Value.Errors).Select(x => x.ErrorMessage).ToList();
+        //    return new JsonResult("-1");
+        //}
+
+
+        #endregion
+
+
+
+
+        #region  New Login 
+
+           [HttpGet]
+        public IActionResult Login(string returnUrl = "")
         {
-            ViewBag.ReturnUrl = ReturnUrl;
-            return View();
+           ViewBag.ReturnUrl = returnUrl;
+           return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginView model, string returnUrl = "")
+        public async Task<IActionResult> Login(LoginView model , string returnUrl = "")
         {
             if (ModelState.IsValid)
             {
-                try
+             
+                var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+                if (result.Succeeded)
                 {
+                  
                     var user = await _userManager.FindByNameAsync(model.UserName);
-                    if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+                    if (user != null)
                     {
+                        // Create claims for the user
                         var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Email, user.Email)
+                };
+
+                      
+                        var roles = await _userManager.GetRolesAsync(user);
+                        foreach (var role in roles)
                         {
-                            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                            new Claim(ClaimTypes.Name, user.UserName),
-                            new Claim(ClaimTypes.Email, user.Email)
-                        };
+                            claims.Add(new Claim(ClaimTypes.Role, role));
+                        }
 
-                        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                        var principal = new ClaimsPrincipal(identity);
+                      
+                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
+                     
                         var authProperties = new AuthenticationProperties
                         {
-                            IsPersistent = false,
+                            IsPersistent = model.RememberMe,
                             ExpiresUtc = DateTimeOffset.UtcNow.AddYears(1)
                         };
 
-                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal,
-                            authProperties);
+                       
+                        await _signInManager.SignInWithClaimsAsync(user, authProperties, claims);
+
+                        if (Url.IsLocalUrl(returnUrl))
+                        {
+                            return Redirect(returnUrl);
+                        }
+
+                        ////return RedirectToAction("Index", "Home");
                         return new JsonResult("1");
                     }
-                    else
-                    {
-                        return new JsonResult("-1");
-                    }
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
+
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return new JsonResult("-1");
             }
 
-            var errors = ModelState.SelectMany(x => x.Value.Errors).Select(x => x.ErrorMessage).ToList();
             return new JsonResult("-1");
         }
 
+        #endregion
 
+
+
+
+
+        #region Old Register
+        //[HttpGet]
+        //public ActionResult Register()
+        //{
+        //    // ViewBag.ListCategories = categoryService.GetSelectListCtegories();
+        //    // ViewBag.ListCountries = countryService.GetSelectListCountries();
+        //    // ViewBag.ListCities = cityService.GetSelectListCities(0);
+
+        //    return View(new RegistrationView { ImageId = 0, TypeId = 1 });
+        //}
+
+
+
+
+
+
+        //[HttpPost]
+        //public ActionResult Register(RegistrationView model)
+        //{
+        //    //if (ModelState.IsValid)
+        //    //{
+        //    //    // Email Verification
+        //    //    if (userService.GetUser(model.Email) != null)
+        //    //    {
+        //    //        ModelState.AddModelError("Warning Email", "Sorry: Email already Exists");
+        //    //        return View(model);
+        //    //    }
+
+        //    //    //Save User Data 
+        //    //    var user = Mapper.Map<RegistrationView, User>(model);
+        //    //    user.Address = "";
+        //    //    user.IsActive = true;
+        //    //    user.Code = user.TypeId == 2 ? "OneQouteSupp" + GenerateuserCode() : "OneQouteClient" + GenerateuserCode();
+        //    //    userService.CreateUser(user);
+
+        //    //    user.Roles.Add(roleService.GetRole(model.TypeId));
+
+        //    //    userService.SaveUser();
+
+
+        //    //    //Verification Email
+        //    //    var code = RandomString(4);
+        //    //    user.ActivationCode = code;
+        //    //    userService.UpdateUser(user);
+        //    //    userService.SaveUser();
+        //    //    if (IsAjaxReuqest()) { return Json(new { code = "1", activationcode = code,id=user.UserId }); }
+
+
+        //    //    //send email
+        //    //    VerificationEmail(model.Email, code, user.UserId, model.Name);
+
+        //    //    return View("RegisterSuccess");
+
+        //    //}
+
+        //    //ViewBag.ListCategories = categoryService.GetSelectListCtegories();
+        //    //ViewBag.ListCountries = countryService.GetSelectListCountries();
+        //    //ViewBag.ListCities = cityService.GetSelectListCities(0);
+        //    //return View(model);
+
+
+        //    return null;
+        //}
+
+
+        #endregion
+
+
+
+
+        #region Register New
+        [HttpGet]
+        public IActionResult Register()
+        {
+            var model = new RegistrationView();
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(RegistrationView model)
+        {
+            if (ModelState.IsValid)
+            {
+                var existingUser = await _userManager.FindByEmailAsync(model.Email);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("Email", "Warning: This email already exists.");
+                    return View(model);
+                }
+                var phoneNumber = string.IsNullOrEmpty(model.Phone) ? "N/A" : model.Phone;
+                var user = new User
+                {
+                    UserName = model.Email.Split('@')[0],
+                    Email = model.Email,
+                    PhoneNumber = model.Phone, // This maps to the IdentityUser's PhoneNumber property
+                    Phone = model.Phone, // This maps to the custom Phone property in your User entity               
+                    NameAr = model.Name,
+                    Address = model.Address,
+                };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    var claims = new List<Claim>
+                  {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email)
+                  };
+                    string roleName = model.TypeId == 1 ? "Client" : "Supplier";
+
+
+                    if (!await _roleManager.RoleExistsAsync(roleName))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(roleName));
+                    }
+                    await _userManager.AddToRoleAsync(user, roleName);
+                    claims.Add(new Claim(ClaimTypes.Role, roleName));
+
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+                    var authProperties = new AuthenticationProperties
+                    {
+                        IsPersistent = false,
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddYears(1)
+                    };
+                    await _signInManager.SignInWithClaimsAsync(user, authProperties, claims);
+
+
+                    return RedirectToAction("Index", "Home");
+                }
+
+                // Add errors to ModelState to display in the view
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            return View(model);
+        }
+        #endregion
+
+
+
+
+
+        #region
         public ActionResult ForgetPassword()
         {
             return View();
@@ -124,11 +355,48 @@ namespace CertificationWebeWeb.Controllers
             return null;
         }
 
+        #region ForgetPassword Asp.netcore
+        //[HttpPost]
+        //public async Task<JsonResult> ForgetPassword(string email)
+        //{
+        //    if (string.IsNullOrWhiteSpace(email))
+        //    {
+        //        return Json("-1"); // Email is empty
+        //    }
+
+        //    // Get the user by email
+        //    var user = await _userManager.FindByEmailAsync(email);
+        //    if (user == null)
+        //    {
+        //        return Json("-1"); // User not found
+        //    }
+
+        //    // Generate a password reset token
+        //    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        //    var url = Url.Action("ResetPassword", "Account", new { userId = user.Id, token = token }, Request.Scheme);
+
+        //    string subject = "Reset Password";
+        //    string body = $"<br/> Please click on the following link to reset your password: <br/><a href='{url}'>Reset Password!</a>";
+
+        //    // Call your email sending method here
+        //    int res = SendEmail(subject, new EmailModel { Body = body, ToEmail = email, Subject = subject, UserName = user.UserName });
+
+        //    return Json(res.ToString());
+        //}
+
+
+        #endregion
+
+
+
+
+
 
         [HttpGet]
         public async Task<IActionResult> ResetPassword()
         {
-            var user = await _userManager.FindByIdAsync(CurrentUser.UserId.ToString());
+            // Get the currently logged-in user
+            var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
             {
@@ -143,14 +411,16 @@ namespace CertificationWebeWeb.Controllers
             });
         }
 
+
         [HttpPost]
         public async Task<IActionResult> ResetPassword(ResetPasswordView resetPasswordView)
         {
-            var user = await _userManager.FindByIdAsync(resetPasswordView.Id.ToString());
+            // Get the currently logged-in user
+            var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
             {
-                return NotFound();
+                return NotFound(); // Return NotFound if user is not found
             }
 
             // Reset password
@@ -176,10 +446,10 @@ namespace CertificationWebeWeb.Controllers
 
             string userData = JsonConvert.SerializeObject(userModel);
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.Email),
-                new Claim("UserData", userData)
-            };
+    {
+        new Claim(ClaimTypes.Name, user.Email),
+        new Claim("UserData", userData)
+    };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
@@ -190,66 +460,17 @@ namespace CertificationWebeWeb.Controllers
             return Json("1"); // Indicate success
         }
 
-
-        public ActionResult Register()
-        {
-            // ViewBag.ListCategories = categoryService.GetSelectListCtegories();
-            // ViewBag.ListCountries = countryService.GetSelectListCountries();
-            // ViewBag.ListCities = cityService.GetSelectListCities(0);
-
-            return View(new RegistrationView { ImageId = 0, TypeId = 1 });
-        }
+        #endregion
 
 
-        [HttpPost]
-        public ActionResult Register(RegistrationView model)
-        {
-            //if (ModelState.IsValid)
-            //{
-            //    // Email Verification
-            //    if (userService.GetUser(model.Email) != null)
-            //    {
-            //        ModelState.AddModelError("Warning Email", "Sorry: Email already Exists");
-            //        return View(model);
-            //    }
-
-            //    //Save User Data 
-            //    var user = Mapper.Map<RegistrationView, User>(model);
-            //    user.Address = "";
-            //    user.IsActive = true;
-            //    user.Code = user.TypeId == 2 ? "OneQouteSupp" + GenerateuserCode() : "OneQouteClient" + GenerateuserCode();
-            //    userService.CreateUser(user);
-
-            //    user.Roles.Add(roleService.GetRole(model.TypeId));
-
-            //    userService.SaveUser();
 
 
-            //    //Verification Email
-            //    var code = RandomString(4);
-            //    user.ActivationCode = code;
-            //    userService.UpdateUser(user);
-            //    userService.SaveUser();
-            //    if (IsAjaxReuqest()) { return Json(new { code = "1", activationcode = code,id=user.UserId }); }
 
 
-            //    //send email
-            //    VerificationEmail(model.Email, code, user.UserId, model.Name);
-
-            //    return View("RegisterSuccess");
-
-            //}
-
-            //ViewBag.ListCategories = categoryService.GetSelectListCtegories();
-            //ViewBag.ListCountries = countryService.GetSelectListCountries();
-            //ViewBag.ListCities = cityService.GetSelectListCities(0);
-            //return View(model);
 
 
-            return null;
-        }
 
-
+        #region 
         [HttpGet]
         public ActionResult ActivationAccount(string ActivationCode, int id)
         {
@@ -303,14 +524,15 @@ namespace CertificationWebeWeb.Controllers
         }
 
 
-        public async Task<ActionResult> LogOut()
+       
+        public async Task<IActionResult> LogOut()
         {
-            await HttpContext.SignOutAsync();
+            await _signInManager.SignOutAsync();
 
-
+           
             Response.Cookies.Delete("UniCertificationCookie");
 
-
+         
             return RedirectToAction("Login", "Account");
         }
 
@@ -328,39 +550,79 @@ namespace CertificationWebeWeb.Controllers
         //}
 
 
+
+
+
+        //[NonAction]
+        //public void VerificationEmail(string email, string activationCode, int id, string username)
+        //{
+        //    var url = string.Format("/Account/ActivationAccount?activationCode={0}&id={1}", activationCode, id);
+        //    var link = Request.Url.AbsoluteUri.Replace(Request.Url.PathAndQuery, url);
+
+        //    string subject = "Activation Account !";
+        //    string body = "<br/> Please click on the following link in order to activate your account" + "<br/><a href='" + link + "'> Activation Account ! </a>";
+
+        //    SendEmail("Activation Account",new EmailModel { Body = body, ToEmail = email, Subject = subject, UserName = username, IsAccountConfirmation = true });
+        //}
+
+
+
+
+
+
         public ActionResult profile()
         {
             return View();
         }
 
-        //public ActionResult ChangePhoto()
-        //{
-        //    var user = _db.Users.Find(CurrentUser.UserId);
 
-        //    return PartialView("_ChangePhoto", new ChangeImageView() { Id = user.UserId, ImageId = user.ImageId });
-        //}
 
-        //[HttpPost]
-        //public ActionResult ChangePhoto(ChangeImageView model)
-        //{
-        //    var user = _db.Users.Find(model.Id);
+        ////public async Task<IActionResult> ChangePhoto()
+        ////{
+          
+        ////    var user = await _userManager.GetUserAsync(User);
 
-        //    if (user == null)
-        //    {
-        //        return NotFound(); // Return 404 if the user is not found
-        //    }
+         
+        ////    if (user == null)
+        ////    {
+        ////        return NotFound();
+        ////    }
 
-        //    // Update the user's ImageId
-        //    user.ImageId = model.ImageId;
+          
+        ////    return PartialView("_ChangePhoto", new ChangeImageView { Id = user.Id, ImageId = user.ImageId });
+        ////}
 
-        //    // Mark the user entity as modified
-        //    _db.Entry(user).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
 
-        //    // Save changes to the database
-        //    _db.SaveChanges();
+        ////[HttpPost]
+        ////public async Task<IActionResult> ChangePhoto(ChangeImageView model)
+        ////{
+           
+        ////    var user = await _userManager.GetUserAsync(User);
 
-        //    // Return a JSON response indicating success
-        //    return Json("1");
-        //}
+           
+        ////    if (user == null)
+        ////    {
+        ////        return NotFound(); 
+        ////    }
+
+          
+        ////    user.ImageId = model.ImageId;
+
+       
+        ////    var result = await _userManager.UpdateAsync(user);
+
+          
+        ////    if (!result.Succeeded)
+        ////    {
+              
+        ////        return BadRequest(result.Errors);
+        ////    }
+
+        ////    return new JsonResult("1");
+        ////}
+
+
+
+        #endregion
     }
 }

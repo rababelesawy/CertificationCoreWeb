@@ -1,159 +1,109 @@
 ﻿@using CertificationWeb.Resources
 @using Microsoft.Extensions.Localization
 @inject IStringLocalizer<SharedResource> Localizer
-@model Certification.Domain.DomainModels.RegistrationView
-@{
-    ViewBag.Title = Localizer["register"];
-}
-<script src="~/Scripts/jquery-3.3.1.min.js"></script>
 
+@model Certification.Domain.DomainModels.RegistrationView;
 
-<div id="titlebar" class="gradient">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-
-                <h2>@Localizer["register"]</h2>
-
-                <!-- Breadcrumbs -->
-                <nav id="breadcrumbs" class="dark">
-                    <ul>
-                        <li>
-                            <a href="@Url.Action("Index", "Home")">@Localizer["homepage"]</a>
-                        </li>
-                        <li>@Localizer["register"]</li>
-                    </ul>
-                </nav>
-
-            </div>
-        </div>
-    </div>
+<div id="titlebar" class="titlebar">
+    <h2>@Localizer["register"]</h2>
+    <nav id="breadcrumbs" class="dark">
+        <ul>
+            <li>
+                <a href="@Url.Action("Index", "Home")">@Localizer["homepage"]</a>
+            </li>
+            <li>@Localizer["register"]</li>
+        </ul>
+    </nav>
 </div>
-
 
 <div class="container">
     <div class="row">
         <div class="col-xl-9 offset-xl-3">
-
             <div class="login-register-page">
-                <!-- Welcome Text -->
                 <div class="welcome-text">
-                    <h3 style="font-size: 26px;">@Localizer["letcreateaccount"] </h3>
+                    <h3>@Localizer["letcreateaccount"]</h3>
                     <span>
-                        @Localizer["alreadyhaveaccount"]<a href="@Url.Action("Login", "Account")">@Localizer["login!"]</a>
+                        @Localizer["alreadyhaveaccount"]
+                        <a href="@Url.Action("Login", "Account")">@Localizer["login!"]</a>
                     </span>
                 </div>
 
+                @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @id = "register-account-form", @class = "row" }))
+                {
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                <!-- Form -->
-                @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @id = "register-account-form", @class = "row" })) {
-                    @Html.ValidationSummary()
-                    <!-- Account Type 1:client 2:supplier -->
                     <div class="account-type">
                         <div>
-                            <input type="radio" name="account-type-radio" id="freelancer-radio" class="account-type-radio" @(Model.TypeId == 1 ? "checked" : "") onchange="$('.companydata').toggle(); $('#hdfTypeId').val('1');">
+                            <input type="radio" name="account-type-radio" id="freelancer-radio" class="account-type-radio" value="1" @(Model.TypeId == 1 ? "checked" : "") onchange="$('.companydata').hide(); $('#hdfTypeId').val('1');">
                             <label for="freelancer-radio" class="ripple-effect-dark">
                                 <i class="icon-material-outline-account-circle"></i> @Localizer["client"]
                             </label>
                         </div>
 
                         <div>
-                            <input type="radio" name="account-type-radio" id="employer-radio" class="account-type-radio" @(Model.TypeId == 2 ? "checked" : "") onchange="$('.companydata').toggle();$('#hdfTypeId').val('2');">
+                            <input type="radio" name="account-type-radio" id="employer-radio" class="account-type-radio" value="2" @(Model.TypeId == 2 ? "checked" : "") onchange="$('.companydata').show(); $('#hdfTypeId').val('2');">
                             <label for="employer-radio" class="ripple-effect-dark">
-                                <i class="icon-material-outline-business-center"></i>@Localizer["supplier"]
+                                <i class="icon-material-outline-business-center"></i> @Localizer["supplier"]
                             </label>
                         </div>
                     </div>
-
 
                     @Html.HiddenFor(x => x.TypeId, new { @id = "hdfTypeId" })
 
                     <div class="input-with-icon-left col-xl-6 col-sm-12">
                         <i class="icon-material-outline-account-circle"></i>
-                        @Html.TextBoxFor(x => x.Name, new { @class = "input-text with-border", @id = "emailaddress-register", @placeholder = Localizer["name"] })
+                        @Html.TextBoxFor(x => x.Name, new { @class = "input-text", @placeholder = Localizer["name"], @required = "required" })
                     </div>
-
 
                     <div class="input-with-icon-left col-xl-6 col-sm-12">
                         <i class="icon-feather-phone"></i>
-                        @Html.TextBoxFor(x => x.Phone, new {
-                            @class = "input-text with-border",
-                            @id = "emailaddress-register",
-                            @placeholder = Localizer["phone"]
-                        })
-
+                        @Html.TextBoxFor(x => x.Phone, new { @class = "input-text", @placeholder = Localizer["phone"], @required = "required" })
                     </div>
-
 
                     <div class="input-with-icon-left col-xl-6 col-sm-12">
                         <i class="icon-material-baseline-mail-outline"></i>
-                        @Html.TextBoxFor(x => x.Email, new {
-                            @class = "input-text with-border",
-                            @id = "emailaddress-register",
-                            @placeholder = Localizer["emailaddress"]
-                        })
-
+                        @Html.TextBoxFor(x => x.Email, new { @class = "input-text", @placeholder = Localizer["emailaddress"], @required = "required" })
                     </div>
 
-
-                    <!--commertial -->
-                    <div class="input-with-icon-left col-xl-6 col-sm-12 ">
-                        <div class="companydata" style="display:none;">
-                            <i class="icon-line-awesome-file-pdf-o"></i>
-                            @Html.TextBoxFor(x => x.CommercialRegister, new {
-                                @class = "input-text with-border",
-                                @id = "CommercialRegister",
-                                @placeholder = Localizer["commercialregister"],
-                                @required = "required",
-                                @title = " "
-                            })
-                        </div>
+                    <div class="input-with-icon-left col-xl-6 col-sm-12">
+                        <i class="icon-material-outline-home"></i>
+                        @Html.TextBoxFor(x => x.Address, new { @class = "input-text", @placeholder = Localizer["address"], @required = "required" })
                     </div>
 
-
-                    <!--password -->
-                    <div class="input-with-icon-left col-xl-6 col-sm-12" data-tippy-placement="bottom" data-tippy="" data-original-title="Should be at least 8 characters long">
-                        <i class="icon-material-outline-lock"></i>
-                        @Html.PasswordFor(x => x.Password, new {
-                            @class = "input-text with-border",
-                            @id = "password-register",
-                            @placeholder = Localizer["password"]
-                        })
+                    <div class="input-with-icon-left col-xl-6 col-sm-12 companydata" style="display: none;">
+                        <i class="icon-line-awesome-file-pdf-o"></i>
+                        @Html.TextBoxFor(x => x.CommercialRegister, new { @class = "input-text", @placeholder = Localizer["commercialregister"], @required = "required" })
                     </div>
 
-                    <!--confirmpassword -->
                     <div class="input-with-icon-left col-xl-6 col-sm-12">
                         <i class="icon-material-outline-lock"></i>
-                        @Html.PasswordFor(x => x.ConfirmPassword, new {
-                            @class = "input-text with-border",
-                            @placeholder = Localizer["confirmpassword"]
-                        })
+                        @Html.PasswordFor(x => x.Password, new { @class = "input-text", @placeholder = Localizer["password"], @required = "required" })
                     </div>
 
+                    <div class="input-with-icon-left col-xl-6 col-sm-12">
+                        <i class="icon-material-outline-lock"></i>
+                        @Html.PasswordFor(x => x.ConfirmPassword, new { @class = "input-text", @placeholder = Localizer["confirmpassword"], @required = "required" })
+                    </div>
 
                     <div class="input-with-icon-left col-xl-6 col-sm-12 checkbox-register">
                         <div class="checkbox">
-                            <input type="checkbox" id="chekcbox2" checked>
+                            <input type="checkbox" id="chekcbox2" required>
                             <label for="chekcbox2">
                                 <span class="checkbox-icon"></span> @Localizer["agreeagreement"]
                             </label>
                         </div>
                     </div>
 
-                    <!-- Button -->
-                    <button class="button full-width button-sliding-icon ripple-effect margin-top-10" type="submit" form="register-account-form">
+                    <button class="button full-width button-sliding-icon" type="submit" form="register-account-form">
                         @Localizer["register"]
                         <i class="icon-material-outline-arrow-right-alt"></i>
                     </button>
                 }
 
-
-                <!-- Social Login -->
                 <div class="social-login-separator">
                     <span>@Localizer["or"]</span>
                 </div>
                 <div class="social-login-buttons">
-
                     <button class="facebook-login ripple-effect" onclick="facebookLogin()">
                         <i class="icon-brand-facebook-f"></i> @Localizer["logfacebook"]
                     </button>
@@ -162,24 +112,150 @@
                     </button>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
-<div class="margin-top-70"></div>
+<style>
 
 
-@if (Model.TypeId == 1) {
-    <script>
-        $('.companydata').hide();
-    </script>
-} else {
-    <script>
-        $('.companydata').show();
-    </script>
+
+    /* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
 }
 
-@section script{
-
-    <script src="~/Scripts/firebase-config.js"></script>
+.container {
+    margin-top: 20px;
 }
+
+.titlebar {
+        background-color: #38629d;
+        
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+h2 {
+    margin: 0;
+}
+
+#breadcrumbs {
+    margin: 10px 0;
+}
+
+#breadcrumbs ul {
+    list-style: none;
+    padding: 0;
+}
+
+#breadcrumbs li {
+    display: inline;
+    margin-right: 5px;
+}
+
+#breadcrumbs a {
+    color: white;
+    text-decoration: none;
+}
+
+.login-register-page {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-text {
+    margin-bottom: 30px;
+}
+
+.welcome-text h3 {
+    margin-bottom: 10px;
+}
+
+.input-with-icon-left {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-with-icon-left i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+}
+
+.input-text {
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.button {
+        background-color: #38629d;
+        
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox input {
+    margin-right: 10px;
+}
+
+.social-login-separator {
+    margin: 30px 0;
+    text-align: center;
+}
+
+.social-login-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.social-login-buttons button {
+    margin: 0 10px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.facebook-login {
+    background-color: #3b5998;
+    color: white;
+}
+
+.google-login {
+    background-color: #db4437;
+    color: white;
+}
+
+.facebook-login:hover {
+    background-color: #2d4373;
+}
+
+.google-login:hover {
+    background-color: #c13526;
+}
+
+
+</style>

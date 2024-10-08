@@ -1,10 +1,9 @@
-﻿@model Certification.Domain.Entities.Course
+﻿@model Certification.Domain.DomainModels.CourseViewModel
 @using FormMethod = Microsoft.AspNetCore.Mvc.Rendering.FormMethod
 
 @{
-    ViewBag.Title = "أضافة دورة";
+    ViewBag.Title = "إضافة دورة";
 }
-
 
 <style>
     .note-editable {
@@ -16,142 +15,118 @@
         width: 1050px !important;
     }
 </style>
+
 <div class="container-fluid">
     <div class="main-container">
         <div class="page-header">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#"><i class="fa fa-book"></i>  الدورات  </a> </li>
-
+                <li class="breadcrumb-item"><a href="#"><i class="fa fa-book"></i> الدورات </a></li>
             </ol>
         </div>
-        <!-- Content wrapper start -->
-        <div class="content-wrapper">
 
-            <!-- Row start -->
-            @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "frmCourse" }))
+        <div class="content-wrapper">
+            @using (Html.BeginForm("SaveCourse", "Course", FormMethod.Post, new { @id = "frmCourse", enctype = "multipart/form-data" }))
             {
                 @Html.HiddenFor(x => x.CourseId)
-
                 @Html.HiddenFor(x => x.CreationDate)
                 @Html.HiddenFor(x => x.CreatedBy)
-            <div class="row gutters">
 
-                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                    <div class="card m-0">
-                        <div class="card-header header-color">
-                            <h5><i class="fa fa-edit"></i> &nbsp;إضافة دورة   </h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                <div class="card">
-                                    <div class="card-body">
-
-                                        <div class="row gutters">
-                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
-                                                <div class="form-group">
-                                                    <label for="inputName">إسم الدورة</label>
-                                                    @Html.TextBoxFor(x => x.CourseName, new { @class = "form-control", @id = "inputName", @placeholder = "ادخل إسم الدورة", @required = "required" })
-                                                </div>
-                                            </div>
-
-                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
-                                                <div class="form-group">
-                                                    <label for="inputName">المدرب </label>
-                                                    @Html.TextBoxFor(x => x.CoachName, new { @class = "form-control", @placeholder = "ادخل إسم المدرب", @required = "required" })
-                                                </div>
-                                            </div>
-
-
-                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
-                                                <div class="form-group">
-                                                    <label class="label">تاريخ الدورة</label>
-                                                    <div class="custom-date-input">
-                                                        <input type="text" class="form-control datepicker-custom-labels" name="CourseDate"
-                                                               value="@(Model.CourseDate != null ? Model.CourseDate.ToString("MM/dd/yyyy") : string.Empty)" required />
-                                                    </div>
-                                                </div>
-                                            </div>
-
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="card">
-
-
-                                        @Html.Editor("CertificationImage", "CertificationEditor", new { htmlAttributes = new { @id = "ImageId" } })
-
-                                    </div>
-                                    <div class="card">
-                                        <div class="card-header header-color">
-                                            <div class="card-title ">
-                                                <i class="fa fa-user"></i>&nbsp;
-                                                إسم المشترك
-                                            </div>
-                                        </div>
-
-
-
-                                        <div class="card-body ">
-                                            <div class="container">
-                                                <div class="row justify-content-md-center">
-
-                                                    <div class="col-md-auto">
-
-                                                        @Html.TextAreaFor(x => x.CertificationName, new { @class = "summernote" })
-
-                                                    </div>
-
-                                                </div>
-                                            </div>
-
-                                            @*@Html.TextAreaFor(x => x.CertificationName, new { @class = "summernote" })*@
-
-                                        </div>
-
-                                    </div>
-                                </div>
-
+                <div class="row gutters">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="card m-0">
+                            <div class="card-header header-color">
+                                <h5><i class="fa fa-edit"></i> &nbsp;إضافة دورة</h5>
+                            </div>
+                            <div class="card-body">
                                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row gutters">
+                                                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                                                    <div class="form-group">
+                                                        <label for="inputName">إسم الدورة</label>
+                                                        @Html.TextBoxFor(x => x.CourseName, new { @class = "form-control", @id = "inputName", @placeholder = "ادخل إسم الدورة", @required = "required" })
+                                                        @Html.ValidationMessageFor(x => x.CourseName, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
 
-                       
-                            
+                                                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                                                    <div class="form-group">
+                                                        <label for="inputCoachName">المدرب</label>
+                                                        @Html.TextBoxFor(x => x.CoachName, new { @class = "form-control", @placeholder = "ادخل إسم المدرب", @required = "required" })
+                                                        @Html.ValidationMessageFor(x => x.CoachName, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
 
-                                        <div class="text-right" style="padding:20px 0 20px 0;">
-                                            <button type="button" onclick="showDesign()"
-                                                    data-toggle="modal" data-target=".bd-example-modal-lg"  name="submit" class="btn btn-success">
+                                                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                                                    <div class="form-group">
+                                                        <label class="label">تاريخ الدورة</label>
+                                                        <div class="custom-date-input">
+                                                            @Html.TextBoxFor(x => x.CourseDate, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker-custom-labels", @required = "required" })
+                                                            @Html.ValidationMessageFor(x => x.CourseDate, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="card">
+                                            <div class="card-header header-color">
+                                                <div class="card-title">
+                                                    <i class="fa fa-upload"></i>&nbsp;
+                                                    صورة الشهادة
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <input type="file" name="CertificationImageFile" id="uploadedImage" accept="image/*" required />
+                                                <span class="text-danger">@Html.ValidationMessageFor(m => m.CertificationImage)</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="card">
+                                            <div class="card-header header-color">
+                                                <div class="card-title">
+                                                    <i class="fa fa-user"></i>&nbsp;
+                                                    إسم المشترك
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="container">
+                                                    <div class="row justify-content-md-center">
+                                                        <div class="col-md-auto">
+                                                            @Html.TextAreaFor(x => x.CertificationName, new { @class = "summernote", @placeholder = "قم بتحريك النص لتعديل وضعه بالشهادة", @id = "CertificationName" })
+                                                            @Html.ValidationMessageFor(x => x.CertificationName, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                        <div class="text-right" style="padding:20px 0;">
+                                            <button type="button" onclick="showDesign()" data-toggle="modal" data-target=".bd-example-modal-lg" class="btn btn-success">
                                                 <i class="fa fa-eye"></i>  معاينة
                                             </button>
-                                            <a onclick="SaveCourse()" class="btn btn-success" href="javascript:void(0)">
+                                            <button type="submit" class="btn btn-success">
                                                 <i class="fa fa-save"></i>
                                                 حفظ
-                                            </a>
-                                            <button type="button" id="submit" name="submit" class="btn btn-dark">
+                                            </button>
+                                            <button type="button" class="btn btn-dark" onclick="window.location.href='@Url.Action("Index", "Course")'">
                                                 <i class="fa fa-times"></i>
                                                 إلغاء
                                             </button>
-
                                         </div>
+                                    </div>
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
-
-
-
                 </div>
-            </div>
             }
-
         </div>
-
     </div>
-
 </div>
-
 
 <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -169,67 +144,49 @@
                 <div class="row gutters">
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                         <div class="card text-left">
-                            <img style="width:100%; height:720px;" id="imageContent" src="@string.Concat("/Attachments/",Model.CertificationImage,".jpg")" class="card-img" alt="..." width="1050">
+                            <img style="width:100%; height:720px;" id="imageContent" src="@string.Concat("~/Attachments/", Model.CertificationImage)" class="card-img" alt="..." />
                             <div class="card-img-overlay">
-
                                 <div class="card-body" id="fillContent">
                                     @Html.Raw(Model.CertificationName)
-
                                 </div>
-
-
-                                @*<div class="card-body" style="padding-right: 0px; padding-left: 100px; margin-top:26%; margin-right: -103px;">
-                                        <h6 style="margin-top: 61px;" class="c-title"> <span style="color:#016241">ضحي السيد ربيع</span></h6>
-
-                                    </div>*@
-
-
-
-
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
 
-
-
 <script src="~/Scripts/jquery-1.10.2.js"></script>
 <script src="~/Scripts/jquery.validate.js"></script>
 <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
-
 <script>
-
     function SaveCourse() {
         if ($("#frmCourse").valid()) {
-              if (validateForm()) {
-                 $.post("@Url.Action("SaveCourse", "Course")", $("#frmCourse").serialize(), function (res) {
-                     alertt("تم الحفظ بنجاح")
-                     window.location.href = "@Url.Action("Index", "Course")";
-                 });
-              }
+            if (validateForm()) {
+                $.post("@Url.Action("SaveCourse", "Course")", new FormData($("#frmCourse")[0]), function (res) {
+                    alert("تم الحفظ بنجاح");
+                    window.location.href = "@Url.Action("Index", "Course")";
+                }).fail(function (xhr, status, error) {
+                    alert("حدث خطأ أثناء الحفظ: " + error);
+                });
+            }
         }
-      
-   
     }
 
     function showDesign() {
-        debugger;
-        document.getElementById("imageContent").src = "/Attachments/" + $('#hdfAttachments').val() + ".jpg";
+        var fileName = $('#uploadedImage').val().split('\\').pop();
+        document.getElementById("imageContent").src = "/Attachments/" + fileName;
         var CertificationName = $("#CertificationName").val();
         $("#fillContent").html("").append(CertificationName);
     }
 
-
     function validateForm() {
         var CertificationName = $("#CertificationName").val();
-        var image = document.getElementsByName('CertificationImage')[0].value;
+        var image = document.getElementById('uploadedImage').files.length;
 
-        if (CertificationName == "" | image == 0) {
+        if (CertificationName == "" || image == 0) {
             alert("لا بد من ادخال الصورة وتحديد الاسم");
             return false;
         }

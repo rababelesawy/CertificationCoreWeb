@@ -76,7 +76,7 @@ namespace Certification.Domain.DomainModels
 
         //[Required(ErrorMessage = "Commercial Register Is Required")]
 
-        public string CommercialRegister { get; set; }
+        public string? CommercialRegister { get; set; }
 
         [Display(Name = "Logo")]
         public int ImageId { get; set; }
@@ -165,7 +165,7 @@ namespace Certification.Domain.DomainModels
     }
     public class ChangeImageView
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         //[DataType("Image")]
         public int ImageId { get; set; }
     }

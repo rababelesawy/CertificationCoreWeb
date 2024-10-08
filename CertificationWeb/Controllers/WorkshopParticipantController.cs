@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Hangfire;
 using CertificationWeb.Controllers;
 using OfficeOpenXml;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace CertificationCoreWeb.Controllers
@@ -35,7 +36,7 @@ namespace CertificationCoreWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> DownloadFile()
         {
-            // Use the web root path to access files in wwwroot
+          
             string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Content", "exceltampletes", "workshopparticipant.xlsx");
 
             if (!System.IO.File.Exists(path))
@@ -49,59 +50,39 @@ namespace CertificationCoreWeb.Controllers
         }
 
 
+
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file)
         {
-            var workshopParticipantList = new List<WorkshopParticipant>();
-
-            if (file != null && file.Length > 0)
+            if (file != null && file.Length > 0 && file.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
             {
-                if (file.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                using (var package = new ExcelPackage(file.OpenReadStream()))
                 {
-                    using (var stream = new MemoryStream())
+                    var currentSheet = package.Workbook.Worksheets;
+                    var workSheet = currentSheet.First();
+                    var noOfRow = workSheet.Dimension.End.Row;
+
+                    for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
                     {
-                        await file.CopyToAsync(stream);
-                        using (var package = new ExcelPackage(stream))
-                        {
-                            var workSheet = package.Workbook.Worksheets.FirstOrDefault();
-                            if (workSheet == null)
-                                return BadRequest("Worksheet not found.");
+                        var Obj = new WorkshopParticipant();
 
-                            var noOfRow = workSheet.Dimension.End.Row;
+                        Obj.Name = workSheet.Cells[rowIterator, 1]?.Value?.ToString();
+                        Obj.Email = workSheet.Cells[rowIterator, 2]?.Value?.ToString();
+                        Obj.Phone = workSheet.Cells[rowIterator, 3]?.Value?.ToString();
 
-                            for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
-                            {
-                                var obj = new WorkshopParticipant
-                                {
-                                    Name = workSheet.Cells[rowIterator, 1].Value?.ToString(),
-                                    Email = workSheet.Cells[rowIterator, 2].Value?.ToString(),
-                                    Phone = workSheet.Cells[rowIterator, 3].Value?.ToString(),
-                                    IsPrinted = false,
-                                    IsEmailSended = false,
-                                    CourseId = int.Parse(Request.Form["courseId"]) // Assuming you send courseId as part of the form data
-                                };
+                        Obj.IsPrinted = false;
+                        Obj.IsEmailSended = false;
+                        Obj.CourseId = int.Parse(Request.Form["CourseId"]);  // Get the CourseId from a hidden field or parameter
 
-                                workshopParticipantList.Add(obj);
-                            }
-
-                            await _db.WorkshopParticipants.AddRangeAsync(workshopParticipantList);
-                            await _db.SaveChangesAsync();
-                        }
+                        _db.WorkshopParticipants.Add(Obj);
+                        await _db.SaveChangesAsync();
                     }
                 }
-                else
-                {
-                    TempData["AlertMessage"] = "امتداد الملف غير صحيح"; // Invalid file extension
-                    return BadRequest(TempData["AlertMessage"]);
-                }
-            }
-            else
-            {
-                TempData["AlertMessage"] = "امتداد الملف غير صحيح"; // Invalid file extension
-                return BadRequest(TempData["AlertMessage"]);
+
+                return Json("1");  // Success
             }
 
-            return Json("1");
+            return Json("-1");  // Failure
         }
 
         [HttpPost]

@@ -2,6 +2,9 @@ using System.Globalization;
 using Certification.Domain.Entities;
 using Certification.Infrastructure.Data;
 using CertificationWeb.CustomAuthentication;
+using Hangfire;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +26,28 @@ builder.Services.AddDbContext<Context>(options =>
     }).AddIdentity<User, IdentityRole>(options => { })
     .AddEntityFrameworkStores<Context>()
     .AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login"; // Set the login path
+        options.LogoutPath = "/Account/Logout"; // Set the logout path
+        options.AccessDeniedPath = "/Account/AccessDenied"; // Set the access denied path
+    });
+
+// Add Hangfire services
+builder.Services.AddHangfire(config =>
+    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddHangfireServer();
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 104857600; // 100MB
+});
 var app = builder.Build();
+
+//Rotative 
+Rotativa.AspNetCore.RotativaConfiguration.Setup(app.Environment.WebRootPath, "Rotativa");
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -51,6 +75,12 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
+
+// Enable Hangfire dashboard for job monitoring
+app.UseHangfireDashboard();
+
+
 
 app.MapControllerRoute(
     name: "default",

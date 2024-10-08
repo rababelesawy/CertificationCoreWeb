@@ -30,7 +30,7 @@
                                                 <div class="form-group col-md-4">
                                                     <label class="label-name">الاسم </label>
                                                     <div class="input-group">
-                                                        @Html.TextBoxFor(x => x.WorkshopParticipantSearchModel.Name, new { @class = "form-control" })
+                                                        @Html.TextBoxFor(x => x.WorkshopParticipantSearchModel.Name, new { @class = "form-control"})
                                                     </div>
                                                 </div>
                                                 <div class="form-group col-md-4">
@@ -84,6 +84,9 @@
                                             @await Html.PartialAsync("_WorkshopParticipantList", Model)
                                         </div>
                                     </div>
+
+
+
                                 </div>
                             </div>
                         </div>
