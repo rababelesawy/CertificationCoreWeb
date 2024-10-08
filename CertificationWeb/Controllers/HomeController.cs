@@ -1,9 +1,7 @@
 ﻿using Certification.Domain.DomainModels;
 using Certification.Domain.Entities;
 using Certification.Infrastructure.Data;
-
 using Microsoft.AspNetCore.Mvc;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Rotativa;
@@ -20,14 +18,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using X.PagedList;
 using Microsoft.AspNetCore.Http;
 using System.Drawing.Printing;
+using Mapster;
 using Microsoft.AspNetCore.Identity;
 
 
 namespace CertificationWeb.Controllers
 {
-
     //[Authorize]
-    public class HomeController :BaseController
+    public class HomeController : BaseController
     {
         private readonly Context _dB;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -35,8 +33,8 @@ namespace CertificationWeb.Controllers
         private readonly SignInManager<User> signInManager;
         private readonly RoleManager<IdentityRole> roleManager;
 
-        public HomeController(Context DB , IHttpContextAccessor httpContextAccessor, UserManager<User> userManager,
-            SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager) :base(DB)
+        public HomeController(Context DB, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager,
+            SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager) : base(DB)
         {
             _dB = DB;
             _httpContextAccessor = httpContextAccessor;
@@ -44,7 +42,9 @@ namespace CertificationWeb.Controllers
             this.signInManager = signInManager;
             this.roleManager = roleManager;
         }
+
         #region Old Index
+
         //public IActionResult Index()
         //{
         //    var courses = _dB.Courses.ToList();
@@ -71,22 +71,22 @@ namespace CertificationWeb.Controllers
 
 
         #region New index
+
         public IActionResult Index(int? page)
         {
-          
             var courses = _dB.Courses.ToList();
 
-    
+
             ViewBag.Courses = courses.Select(s => new SelectListItem
             {
                 Text = s.CourseName,
                 Value = s.CourseId.ToString()
             }).ToList();
 
-          
+
             var searchModel = new WorkshopParticipantSearchModel();
 
-         
+
             var participantsQuery = _dB.WorkshopParticipants.AsQueryable();
 
             // Pagination logic
@@ -94,10 +94,10 @@ namespace CertificationWeb.Controllers
             int pageNumber = page ?? 1;
 
             var paginatedParticipants = participantsQuery
-                .OrderBy(p => p.WorkshopParticipantId) 
+                .OrderBy(p => p.WorkshopParticipantId)
                 .ToPagedList(pageNumber, pageSize);
 
-        
+
             var model = new WorkshopParticipantModel
             {
                 TotalUser = participantsQuery.Count(),
@@ -106,7 +106,7 @@ namespace CertificationWeb.Controllers
                 WorkshopParticipantSearchModel = searchModel,
                 WorkshopParticipants = new PagedResultViewModel<WorkshopParticipant>
                 {
-                    Items = paginatedParticipants, 
+                    Items = paginatedParticipants,
                     TotalCount = paginatedParticipants.TotalItemCount,
                     CurrentPage = paginatedParticipants.PageNumber,
                     ItemsPerPage = paginatedParticipants.PageSize
@@ -115,13 +115,12 @@ namespace CertificationWeb.Controllers
 
             return View(model);
         }
+
         #endregion
 
 
+        #region old workshopparticipation
 
-
-
-        #region  old workshopparticipation
         //public IActionResult WorkshopParticipants(int itemsPerPage = 10, int currentPage = 1)
         //{
         //    ViewBag.Theme = "custom";
@@ -169,12 +168,8 @@ namespace CertificationWeb.Controllers
         //    return PartialView("_WorkshopParticipantList", result);
         //}
 
-
-
-
         #endregion
 
-      
 
         public async Task<IActionResult> WorkshopParticipants(int itemsPerPage = 10, int currentPage = 1)
         {
@@ -182,9 +177,9 @@ namespace CertificationWeb.Controllers
             ViewBag.Type = 2;
             ViewBag.Index = itemsPerPage * (currentPage - 1) + 1;
 
-          
+
             var workshopParticipants = await _dB.WorkshopParticipants
-                .OrderByDescending(x => x.CourseId) 
+                .OrderByDescending(x => x.CourseId)
                 .ToListAsync();
 
             var totalUserCount = workshopParticipants.Count();
@@ -199,13 +194,13 @@ namespace CertificationWeb.Controllers
 
             var pagedList = pagedWorkshopParticipants.ToPagedList(currentPage, itemsPerPage, totalUserCount);
 
-          
+
             var result = new WorkshopParticipantModel
             {
                 WorkshopParticipantSearchModel = new WorkshopParticipantSearchModel(),
                 WorkshopParticipants = new PagedResultViewModel<WorkshopParticipant>
                 {
-                    Items = pagedList, 
+                    Items = pagedList,
                     TotalCount = totalUserCount,
                     CurrentPage = currentPage,
                     ItemsPerPage = itemsPerPage
@@ -215,14 +210,13 @@ namespace CertificationWeb.Controllers
                 NonPrintUser = nonPrintUserCount
             };
 
-           
+
             return PartialView("_WorkshopParticipantList", result);
         }
 
 
+        #region old WorkshopParticipantSearch
 
-
-        #region  old WorkshopParticipantSearch
         //[HttpPost]
         //    public ActionResult WorkshopParticipantSearch(WorkshopParticipantSearchModel model,int itemsPerPage = 10, int currentPage = 1)
         //    {
@@ -248,8 +242,10 @@ namespace CertificationWeb.Controllers
 
 
         #region New WorkshopParticipantSearch
+
         [HttpPost]
-        public async Task<IActionResult> WorkshopParticipantSearch(WorkshopParticipantSearchModel WorkshopParticipantSearchModel, int itemsPerPage = 10, int currentPage = 1)
+        public async Task<IActionResult> WorkshopParticipantSearch(
+            WorkshopParticipantSearchModel WorkshopParticipantSearchModel, int itemsPerPage = 10, int currentPage = 1)
         {
             ViewBag.Theme = "custom";
             ViewBag.Index = itemsPerPage * (currentPage - 1) + 1;
@@ -262,52 +258,58 @@ namespace CertificationWeb.Controllers
 
             var currentUserId = user.Id;
 
-      
+
             var workshopParticipantsQuery = _dB.WorkshopParticipants
-                .Include(x => x.Course) 
+                .Include(x => x.Course)
                 .Where(x => x.Course.CreatedBy == currentUserId);
 
             if (WorkshopParticipantSearchModel != null)
             {
                 if (!string.IsNullOrEmpty(WorkshopParticipantSearchModel.Name))
                 {
-                    workshopParticipantsQuery = workshopParticipantsQuery.Where(x => x.Name.Contains(WorkshopParticipantSearchModel.Name));
+                    workshopParticipantsQuery =
+                        workshopParticipantsQuery.Where(x => x.Name.Contains(WorkshopParticipantSearchModel.Name));
                 }
 
                 if (!string.IsNullOrEmpty(WorkshopParticipantSearchModel.Phone))
                 {
-                    workshopParticipantsQuery = workshopParticipantsQuery.Where(x => x.Phone == WorkshopParticipantSearchModel.Phone);
+                    workshopParticipantsQuery =
+                        workshopParticipantsQuery.Where(x => x.Phone == WorkshopParticipantSearchModel.Phone);
                 }
 
                 if (WorkshopParticipantSearchModel.CourseId != 0)
                 {
-                    workshopParticipantsQuery = workshopParticipantsQuery.Where(x => x.CourseId == WorkshopParticipantSearchModel.CourseId);
+                    workshopParticipantsQuery =
+                        workshopParticipantsQuery.Where(x => x.CourseId == WorkshopParticipantSearchModel.CourseId);
                 }
 
                 if (!string.IsNullOrEmpty(WorkshopParticipantSearchModel.CoachName))
                 {
-                    workshopParticipantsQuery = workshopParticipantsQuery.Where(x => x.Course.CoachName.Contains(WorkshopParticipantSearchModel.CoachName));
+                    workshopParticipantsQuery = workshopParticipantsQuery.Where(x =>
+                        x.Course.CoachName.Contains(WorkshopParticipantSearchModel.CoachName));
                 }
 
                 if (WorkshopParticipantSearchModel.IsPrinted != null)
                 {
-                    workshopParticipantsQuery = workshopParticipantsQuery.Where(x => x.IsPrinted == WorkshopParticipantSearchModel.IsPrinted);
+                    workshopParticipantsQuery =
+                        workshopParticipantsQuery.Where(x => x.IsPrinted == WorkshopParticipantSearchModel.IsPrinted);
                 }
 
                 if (WorkshopParticipantSearchModel.IsSended != null)
                 {
-                    workshopParticipantsQuery = workshopParticipantsQuery.Where(x => x.IsEmailSended == WorkshopParticipantSearchModel.IsSended);
+                    workshopParticipantsQuery = workshopParticipantsQuery.Where(x =>
+                        x.IsEmailSended == WorkshopParticipantSearchModel.IsSended);
                 }
             }
 
-      
+
             var totalUserCount = await workshopParticipantsQuery.CountAsync();
 
-        
+
             var printUserCount = await workshopParticipantsQuery.CountAsync(x => x.IsPrinted == true);
             var nonPrintUserCount = await workshopParticipantsQuery.CountAsync(x => x.IsPrinted != true);
 
-        
+
             var pagedWorkshopParticipants = await workshopParticipantsQuery
                 .OrderByDescending(x => x.CourseId)
                 .Skip((currentPage - 1) * itemsPerPage)
@@ -339,40 +341,26 @@ namespace CertificationWeb.Controllers
             return PartialView("_WorkshopParticipantList", result);
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         #endregion
-
 
 
         [AllowAnonymous]
         public ActionResult EditUserInfo(Guid Id)
         {
             var model = _dB.WorkshopParticipants.Where(x => x.WorkshopParticipantId == Id).FirstOrDefault();
-            if(model==null)
+            if (model == null)
                 return View("ErrorPage");
-            if (model.IsPrinted==true)
-                return RedirectToAction("UserCertificate", new { Id=model.WorkshopParticipantId });
+            if (model.IsPrinted == true)
+                return RedirectToAction("UserCertificate", new { Id = model.WorkshopParticipantId });
             else
-            return View("UserInfo", model);
+                return View("UserInfo", model);
         }
 
 
         [AllowAnonymous]
         public ActionResult UserInfo(Guid Id)
-        {  
-                return View("ErrorPage");
+        {
+            return View("ErrorPage");
         }
 
         [AllowAnonymous]
@@ -385,7 +373,7 @@ namespace CertificationWeb.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public ActionResult UserInfo(WorkshopParticipant model ) // how it implement
+        public ActionResult UserInfo(WorkshopParticipant model) // how it implement
         {
             var WorkshopParticipant = _dB.WorkshopParticipants.Find(model.WorkshopParticipantId);
             WorkshopParticipant.Name = model.Name;
@@ -395,7 +383,8 @@ namespace CertificationWeb.Controllers
             return Json("1");
         }
 
-        #region  Old GetCertification
+        #region Old GetCertification
+
         //[AllowAnonymous]
         //public ActionResult GetCertification(Guid Id)
         //{
@@ -404,6 +393,7 @@ namespace CertificationWeb.Controllers
 
         //    return View("Certification", _dB.WorkshopParticipants.Where(x => x.WorkshopParticipantId == Id).FirstOrDefault());
         //}
+
         #endregion
 
 
@@ -412,24 +402,20 @@ namespace CertificationWeb.Controllers
         [AllowAnonymous]
         public ActionResult GetCertification(Guid Id)
         {
-           
             var participant = _dB.WorkshopParticipants.FirstOrDefault(x => x.WorkshopParticipantId == Id);
 
-          
+
             if (participant == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
-            
             if (participant.CourseId == null)
             {
-                
                 ModelState.AddModelError(string.Empty, "Course ID is not set for this participant.");
-                return View("_Certification", participant);
+                return View("_Certification", participant.Adapt<CourseParticipationModel>());
             }
 
-           
             var course = _dB.Courses.FirstOrDefault(c => c.CourseId == participant.CourseId);
 
             CourseParticipationModel model = new CourseParticipationModel
@@ -439,12 +425,10 @@ namespace CertificationWeb.Controllers
             };
 
 
-            return PartialView("_Certification" , model);
+            return PartialView("_Certification", model);
         }
+
         #endregion
-
-
-
 
 
         [AllowAnonymous]
@@ -458,13 +442,13 @@ namespace CertificationWeb.Controllers
             // Check if the model is null
             if (model == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
-           
+
             model.IsPrinted = true;
 
-           
+
             await _dB.SaveChangesAsync();
 
             // Return the PDF document
@@ -477,21 +461,18 @@ namespace CertificationWeb.Controllers
 
 
         [AllowAnonymous]
-        public ActionResult Certification(WorkshopParticipant model)   //// how it implement
+        public ActionResult Certification(WorkshopParticipant model) //// how it implement
         {
             var model2 = _dB.WorkshopParticipants
-                .Include(wp => wp.Course) 
+                .Include(wp => wp.Course)
                 .FirstOrDefault(x => x.WorkshopParticipantId == model.WorkshopParticipantId);
 
             if (model2 == null)
             {
-               
-                return NotFound(); 
+                return NotFound();
             }
 
-            return PartialView("_Certification", model2);
+            return PartialView("_Certification", model2.Adapt<CourseParticipationModel>());
         }
-
-
     }
 }

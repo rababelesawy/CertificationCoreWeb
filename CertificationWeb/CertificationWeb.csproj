@@ -32,6 +32,7 @@
     <ItemGroup>
       <PackageReference Include="EPPlus" Version="7.4.0" />
       <PackageReference Include="Hangfire" Version="1.8.14" />
+      <PackageReference Include="Mapster" Version="7.4.1-pre01" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
