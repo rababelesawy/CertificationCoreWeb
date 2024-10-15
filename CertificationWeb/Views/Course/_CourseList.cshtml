@@ -164,45 +164,53 @@
 
 </script> *@
 
+
 <script>
     function uploadWorkshopParticipant(CourseId) {
-        debugger;
         var formdata = new FormData();
         var fileInput = document.getElementById('upload_' + CourseId);
 
         if (fileInput.files.length > 0) {
-            for (i = 0; i < fileInput.files.length; i++) {
-                formdata.append('file', fileInput.files[i]);  // Append the file
-            }
-
+            formdata.append('file', fileInput.files[0]);  // Append the first file
             formdata.append('CourseId', CourseId);  // Append the CourseId
 
-            // Create an XMLHttpRequest instance
             var xhr = new XMLHttpRequest();
 
-            // The action URL should be passed properly from the server-side
-            var uploadUrl = '@Url.Action("Upload", "WorkshopParticipant")';  // URL generated on the server side
+            var uploadUrl = '/WorkshopParticipant/Upload'; // Replace with actual URL
 
-            // Open the request with the URL
-            xhr.open('POST', uploadUrl);
+            xhr.open('POST', uploadUrl, true);
 
-            // Define the function that handles the server's response
             xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4) { // readyState 4 means the request is done
-                    if (xhr.status === 200) { // status 200 is a successful return
-                        alert("تم الحفظ بنجاح");
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        try {
+                            var response = JSON.parse(xhr.responseText);  // Parse server response
+
+                            if (response === "1") {
+                                alert("تم الحفظ بنجاح");
+                            } else if (response === "5Only") {
+                                alert("تم إضافة العدد المسموح به فقط (5 مشاركين).");
+                            } else if (response === "FreeUserParticipantLimitReached") {
+                                alert("تم الوصول إلى الحد المسموح به للـ FreeUser (5 مشاركين).");
+                            } else {
+                                alert("حدث خطأ. حاول مرة أخرى.");
+                            }
+                        } catch (e) {
+                            alert("خطأ في معالجة الاستجابة من السيرفر.");
+                        }
                     } else {
                         alert("خطأ أثناء رفع الملف. تأكد من الملفات أو حاول مرة أخرى.");
                     }
                 }
             };
 
-            // Send the form data (the file and CourseId)
+            xhr.onerror = function () {
+                alert("فشل الاتصال بالسيرفر. يرجى المحاولة مرة أخرى.");
+            };
+
             xhr.send(formdata);
         } else {
-            console.log("no files selected");
             alert("لم تقم بتحديد ملف.");
         }
     }
 </script>
-

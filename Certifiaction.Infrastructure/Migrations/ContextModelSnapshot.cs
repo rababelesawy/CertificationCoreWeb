@@ -59,7 +59,7 @@ namespace Certifiaction.Infrastructure.Migrations
 
                     b.HasIndex("CreatedBy");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("Certification.Domain.Entities.FileAttachment", b =>
@@ -211,7 +211,7 @@ namespace Certifiaction.Infrastructure.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("WorkshopParticipants");
+                    b.ToTable("WorkshopParticipants", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

@@ -166,19 +166,32 @@ ViewBag.Title = "إضافة دورة";
 <script src="~/Scripts/jquery-1.10.2.js"></script>
 <script src="~/Scripts/jquery.validate.js"></script>
 <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+
+
 <script>
     function SaveCourse() {
         if ($("#frmCourse").valid()) {
             if (validateForm()) {
-                $.post("@Url.Action("SaveCourse", "Course")", new FormData($("#frmCourse")[0]), function (res) {
-                    alert("تم الحفظ بنجاح");
-                    window.location.href = "@Url.Action("Index", "Course")";
-                }).fail(function (xhr, status, error) {
-                    alert("حدث خطأ أثناء الحفظ: " + error);
-                });
+                $.post({
+                    url: "@Url.Action("SaveCourse", "Course")",
+                    data: new FormData($("#frmCourse")[0]),
+                    processData: false,  // Important for FormData
+                    contentType: false,  // Important for FormData
+                })
+                    .done(function (res) {
+                        alert(res); // This will display the response from the server directly
+                        if (res === "تم الحفظ بنجاح") {
+                            window.location.href = "@Url.Action("Index", "Course")"; // Redirect on success
+                        }
+                    })
+                    .fail(function (xhr, status, error) {
+                        alert("حدث خطأ أثناء الحفظ: " + error); // Display error message
+                    });
             }
         }
     }
+
+
 
     function showDesign() {
         var fileName = $('#uploadedImage').val().split('\\').pop();
@@ -197,4 +210,4 @@ ViewBag.Title = "إضافة دورة";
         }
         return true;
     }
-</script>
+</script> 

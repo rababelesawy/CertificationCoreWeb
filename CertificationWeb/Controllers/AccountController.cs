@@ -247,12 +247,86 @@ namespace CertificationWebeWeb.Controllers
 
 
         #region Register New
+        //[HttpGet]
+        //public IActionResult Register()
+        //{
+        //    var model = new RegistrationView();
+        //    return View(model);
+        //}
+
+        //[HttpPost]
+        //public async Task<IActionResult> Register(RegistrationView model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var existingUser = await _userManager.FindByEmailAsync(model.Email);
+        //        if (existingUser != null)
+        //        {
+        //            ModelState.AddModelError("Email", "Warning: This email already exists.");
+        //            return View(model);
+        //        }
+        //        var phoneNumber = string.IsNullOrEmpty(model.Phone) ? "N/A" : model.Phone;
+        //        var user = new User
+        //        {
+        //            UserName = model.Email.Split('@')[0],
+        //            Email = model.Email,
+        //            PhoneNumber = model.Phone, // This maps to the IdentityUser's PhoneNumber property
+        //            Phone = model.Phone, // This maps to the custom Phone property in your User entity               
+        //            NameAr = model.Name,
+        //            Address = model.Address,
+        //        };
+        //        var result = await _userManager.CreateAsync(user, model.Password);
+        //        if (result.Succeeded)
+        //        {
+        //            var claims = new List<Claim>
+        //          {
+        //        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        //        new Claim(ClaimTypes.Name, user.UserName),
+        //        new Claim(ClaimTypes.Email, user.Email)
+        //          };
+        //            string roleName = model.TypeId == 1 ? "Client" : "Supplier";
+
+
+        //            if (!await _roleManager.RoleExistsAsync(roleName))
+        //            {
+        //                await _roleManager.CreateAsync(new IdentityRole(roleName));
+        //            }
+        //            await _userManager.AddToRoleAsync(user, roleName);
+        //            claims.Add(new Claim(ClaimTypes.Role, roleName));
+
+        //            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        //            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+        //            var authProperties = new AuthenticationProperties
+        //            {
+        //                IsPersistent = false,
+        //                ExpiresUtc = DateTimeOffset.UtcNow.AddYears(1)
+        //            };
+        //            await _signInManager.SignInWithClaimsAsync(user, authProperties, claims);
+
+
+        //            return RedirectToAction("Index", "Home");
+        //        }
+
+        //        // Add errors to ModelState to display in the view
+        //        foreach (var error in result.Errors)
+        //        {
+        //            ModelState.AddModelError(string.Empty, error.Description);
+        //        }
+        //    }
+
+        //    return View(model);
+        //}
+        #endregion
+
+
         [HttpGet]
         public IActionResult Register()
         {
             var model = new RegistrationView();
             return View(model);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Register(RegistrationView model)
@@ -265,27 +339,46 @@ namespace CertificationWebeWeb.Controllers
                     ModelState.AddModelError("Email", "Warning: This email already exists.");
                     return View(model);
                 }
+
                 var phoneNumber = string.IsNullOrEmpty(model.Phone) ? "N/A" : model.Phone;
                 var user = new User
                 {
                     UserName = model.Email.Split('@')[0],
                     Email = model.Email,
-                    PhoneNumber = model.Phone, // This maps to the IdentityUser's PhoneNumber property
-                    Phone = model.Phone, // This maps to the custom Phone property in your User entity               
+                    PhoneNumber = model.Phone, // IdentityUser's PhoneNumber
+                    Phone = model.Phone, // Custom Phone property
                     NameAr = model.Name,
                     Address = model.Address,
                 };
+
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     var claims = new List<Claim>
-                  {
+            {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.Email, user.Email)
-                  };
-                    string roleName = model.TypeId == 1 ? "Client" : "Supplier";
+            };
 
+                    string roleName;
+                    if (model.TypeId == 1)
+                    {
+                        roleName = "Client";
+                    }
+                    else if (model.TypeId == 2)
+                    {
+                        roleName = "Supplier";
+                    }
+                    else if (model.TypeId == 3)
+                    {
+                        roleName = "FreeUser"; // Add FreeUser role for TypeId == 3
+                    }
+                    else
+                    {
+                        // Handle other cases
+                        roleName = "Client"; // Default role
+                    }
 
                     if (!await _roleManager.RoleExistsAsync(roleName))
                     {
@@ -304,7 +397,6 @@ namespace CertificationWebeWeb.Controllers
                     };
                     await _signInManager.SignInWithClaimsAsync(user, authProperties, claims);
 
-
                     return RedirectToAction("Index", "Home");
                 }
 
@@ -317,7 +409,6 @@ namespace CertificationWebeWeb.Controllers
 
             return View(model);
         }
-        #endregion
 
 
 

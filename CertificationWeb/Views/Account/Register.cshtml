@@ -5,15 +5,15 @@
 @model Certification.Domain.DomainModels.RegistrationView;
 
 <div id="titlebar" class="titlebar">
-    <h2>@Localizer["register"]</h2>
-    <nav id="breadcrumbs" class="dark">
+    <h2>@Localizer["Register Page "]</h2>
+  @*   <nav id="breadcrumbs" class="dark">
         <ul>
             <li>
                 <a href="@Url.Action("Index", "Home")">@Localizer["homepage"]</a>
             </li>
             <li>@Localizer["register"]</li>
         </ul>
-    </nav>
+    </nav> *@
 </div>
 
 <div class="container">
@@ -46,7 +46,17 @@
                                 <i class="icon-material-outline-business-center"></i> @Localizer["supplier"]
                             </label>
                         </div>
+
+
+
+                        <div>
+                            <input type="radio" name="account-type-radio" id="freeuser-radio" class="account-type-radio" value="3" @(Model.TypeId == 3 ? "checked" : "") onchange="$('.companydata').hide(); $('#hdfTypeId').val('3');">
+                            <label for="freeuser-radio" class="ripple-effect-dark">
+                                <i class="icon-material-outline-account-circle"></i> @Localizer["Free User"]
+                            </label>
+                        </div>
                     </div>
+                 
 
                     @Html.HiddenFor(x => x.TypeId, new { @id = "hdfTypeId" })
 

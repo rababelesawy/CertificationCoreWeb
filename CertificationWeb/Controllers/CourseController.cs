@@ -16,6 +16,8 @@ using Certification.Domain.DomainModels;
 using CertificationWeb.Controllers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace CertificationCoreWeb.Controllers
 {
@@ -28,9 +30,11 @@ namespace CertificationCoreWeb.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IBackgroundJobClient _backgroundJobClient;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<CourseController> _logger;
 
         public CourseController(Context DB, IWebHostEnvironment webHostEnvironment, UserManager<User> userManager,
-            SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager, IBackgroundJobClient backgroundJobClient) : base(DB)
+            SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager, IBackgroundJobClient backgroundJobClient, IConfiguration configuration, ILogger<CourseController> logger) : base(DB)
         {
             _dB = DB;
             _webHostEnvironment = webHostEnvironment;
@@ -38,6 +42,8 @@ namespace CertificationCoreWeb.Controllers
             _signInManager = signInManager;
             _roleManager = roleManager;
             _backgroundJobClient = backgroundJobClient;
+            _configuration = configuration;
+            _logger = logger;
         }
 
 
@@ -216,6 +222,113 @@ namespace CertificationCoreWeb.Controllers
 
         #endregion
 
+        //[HttpGet]
+        //public async Task<IActionResult> AddCourse(int id = 0)
+        //{
+        //    var user = await _userManager.GetUserAsync(User);
+
+        //    if (user == null)
+        //    {
+        //        return Unauthorized();
+        //    }
+
+        //    var currentUserId = user.Id;
+
+        //    CourseViewModel model = new CourseViewModel
+        //    {
+        //        CertificationImage = "Certification.jpg",
+        //        CertificationName = "قم بتحريك النص لتعديل وضعه بالشهادة",
+        //        CreatedBy = currentUserId,
+        //        CreationDate = DateTime.Now,
+        //        CourseDate = DateTime.Now
+        //    };
+
+
+        //    if (id != 0)
+        //    {
+        //        var existingCourse = await _dB.Courses.FindAsync(id);
+        //        if (existingCourse != null)
+        //        {
+        //            model = new CourseViewModel
+        //            {
+        //                CourseId = existingCourse.CourseId,
+        //                CourseName = existingCourse.CourseName,
+        //                CoachName = existingCourse.CoachName,
+        //                CertificationImage = existingCourse.CertificationImage,
+        //                CertificationName = existingCourse.CertificationName,
+        //                CreationDate = existingCourse.CreationDate,
+        //                CourseDate = existingCourse.CourseDate,
+        //                CreatedBy = existingCourse.CreatedBy
+        //            };
+        //        }
+        //    }
+
+        //    return View(model);
+        //}
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> SaveCourse(CourseViewModel model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return RedirectToAction("AddCourse", model);
+        //    }
+        //    // Handle image upload
+        //    if (model.CertificationImageFile != null)
+        //    {
+        //        var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Attachments");
+
+        //        if (!Directory.Exists(uploadsFolder))
+        //        {
+        //            Directory.CreateDirectory(uploadsFolder);
+        //        }
+        //        var fileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(model.CertificationImageFile.FileName);
+        //        var filePath = Path.Combine(uploadsFolder, fileName);
+
+        //        using (var stream = new FileStream(filePath, FileMode.Create))
+        //        {
+        //            await model.CertificationImageFile.CopyToAsync(stream);
+        //        }
+        //        model.CertificationImage = fileName;
+        //    }
+        //    else if (string.IsNullOrEmpty(model.CertificationImage))
+        //    {
+        //        model.CertificationImage = "Certification.jpg";  // Default if no image is provided
+        //    }
+        //    if (model.CourseId == 0)
+        //    {
+        //        var newCourse = new Course
+        //        {
+        //            CourseName = model.CourseName,
+        //            CoachName = model.CoachName,
+        //            CertificationImage = model.CertificationImage,
+        //            CertificationName = model.CertificationName,
+        //            CreationDate = DateTime.Now,
+        //            CourseDate = model.CourseDate,
+        //            CreatedBy = model.CreatedBy
+        //        };
+        //        _dB.Courses.Add(newCourse);
+        //    }
+        //    else
+        //    {
+        //        // Update existing course
+        //        var existingCourse = await _dB.Courses.FindAsync(model.CourseId);
+        //        if (existingCourse != null)
+        //        {
+        //            existingCourse.CourseName = model.CourseName;
+        //            existingCourse.CoachName = model.CoachName;
+        //            existingCourse.CertificationImage = model.CertificationImage;
+        //            existingCourse.CertificationName = model.CertificationName;
+        //            existingCourse.CourseDate = model.CourseDate;
+        //            _dB.Entry(existingCourse).State = EntityState.Modified;
+        //        }
+        //    }
+        //    await _dB.SaveChangesAsync();
+        //    return RedirectToAction("Index", "Course");
+        //}
+
+
         [HttpGet]
         public async Task<IActionResult> AddCourse(int id = 0)
         {
@@ -230,14 +343,13 @@ namespace CertificationCoreWeb.Controllers
 
             CourseViewModel model = new CourseViewModel
             {
-                CertificationImage = "Certification.jpg",  
-                CertificationName = "قم بتحريك النص لتعديل وضعه بالشهادة", 
+                CertificationImage = "Certification.jpg",
+                CertificationName = "قم بتحريك النص لتعديل وضعه بالشهادة",
                 CreatedBy = currentUserId,
-                CreationDate = DateTime.Now,  
-                CourseDate = DateTime.Now     
+                CreationDate = DateTime.Now,
+                CourseDate = DateTime.Now
             };
 
-      
             if (id != 0)
             {
                 var existingCourse = await _dB.Courses.FindAsync(id);
@@ -259,24 +371,46 @@ namespace CertificationCoreWeb.Controllers
 
             return View(model);
         }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveCourse(CourseViewModel model)
         {
+            // Check if the model state is valid
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("AddCourse", model);
+                // Collect error messages
+                var errors = ModelState.Values
+                                       .SelectMany(v => v.Errors)
+                                       .Select(e => e.ErrorMessage)
+                                       .ToList();
+                // Return the first error message as content
+                return Content(string.Join(", ", errors));
             }
+
+            // Get the current user
+            var currentUser = await _userManager.GetUserAsync(User);
+            bool isFreeUser = await _userManager.IsInRoleAsync(currentUser, "FreeUser");
+
+            // If the user is free, check their course count
+            if (isFreeUser)
+            {
+                var courseCount = await _dB.Courses.CountAsync(c => c.CreatedBy == currentUser.Id);
+                if (courseCount >= 5)
+                {
+                    return Content("تم تجاوز العدد المسموح به من الدورات 5 دورات"); // Return string message for free user limit
+                }
+            }
+
             // Handle image upload
             if (model.CertificationImageFile != null)
             {
                 var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Attachments");
 
+                // Ensure the upload directory exists
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
                 }
+
+                // Create a unique filename and save the file
                 var fileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(model.CertificationImageFile.FileName);
                 var filePath = Path.Combine(uploadsFolder, fileName);
 
@@ -284,12 +418,13 @@ namespace CertificationCoreWeb.Controllers
                 {
                     await model.CertificationImageFile.CopyToAsync(stream);
                 }
-                model.CertificationImage = fileName;
+                model.CertificationImage = fileName; // Set the filename to the model
             }
             else if (string.IsNullOrEmpty(model.CertificationImage))
             {
-                model.CertificationImage = "Certification.jpg";  // Default if no image is provided
+                model.CertificationImage = "Certification.jpg";  
             }
+
             if (model.CourseId == 0)
             {
                 var newCourse = new Course
@@ -300,13 +435,12 @@ namespace CertificationCoreWeb.Controllers
                     CertificationName = model.CertificationName,
                     CreationDate = DateTime.Now,
                     CourseDate = model.CourseDate,
-                    CreatedBy = model.CreatedBy
+                    CreatedBy = currentUser.Id 
                 };
-                _dB.Courses.Add(newCourse);
+                await _dB.Courses.AddAsync(newCourse); 
             }
             else
             {
-                // Update existing course
                 var existingCourse = await _dB.Courses.FindAsync(model.CourseId);
                 if (existingCourse != null)
                 {
@@ -315,11 +449,13 @@ namespace CertificationCoreWeb.Controllers
                     existingCourse.CertificationImage = model.CertificationImage;
                     existingCourse.CertificationName = model.CertificationName;
                     existingCourse.CourseDate = model.CourseDate;
-                    _dB.Entry(existingCourse).State = EntityState.Modified;
+                    _dB.Entry(existingCourse).State = EntityState.Modified; 
                 }
             }
-            await _dB.SaveChangesAsync();
-            return RedirectToAction("Index", "Course");
+
+            await _dB.SaveChangesAsync(); 
+        
+            return Content("تم الحفظ بنجاح"); 
         }
 
 
