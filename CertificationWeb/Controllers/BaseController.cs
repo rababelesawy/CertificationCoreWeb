@@ -1,11 +1,9 @@
-﻿
-
-using System.Net;
+﻿using System.Net;
 using System.Net.Mail;
 using System.Security.Claims;
+using Certification.Domain.DomainModels;
 using Certification.Domain.Entities;
 using Certification.Infrastructure.Data;
-using CertificationWeb.CustomAuthentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
@@ -13,7 +11,6 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 namespace CertificationWeb.Controllers
 {
     [Authorize]
-    //[CustomAuthorize]
     public class BaseController : Controller
     {
         private readonly Context _dB;
