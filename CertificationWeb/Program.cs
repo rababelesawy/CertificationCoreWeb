@@ -1,5 +1,7 @@
 using System.Globalization;
+using Certifiaction.Infrastructure.Services;
 using Certification.Domain.Entities;
+using Certification.Domain.Interfaces;
 using Certification.Infrastructure.Data;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -42,6 +44,10 @@ builder.Services.Configure<FormOptions>(options =>
 {
     options.MultipartBodyLengthLimit = 104857600; // 100MB
 });
+
+
+
+builder.Services.AddScoped<IEmailService, EmailService>();
 var app = builder.Build();
 
 //Rotative 
